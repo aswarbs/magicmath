@@ -1,2 +1,4 @@
 Pillow
 matplotlib
+openai
+requests
