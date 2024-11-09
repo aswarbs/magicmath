@@ -41,25 +41,9 @@ class MyApp:
         # Set the background color to white
         master.configure(bg="white")
 
-        # Bind keys for toggling fullscreen and closing the window
-        master.bind('<Double-Button-1>', self.toggle_fullscreen)
-        master.bind("<F11>", self.toggle_fullscreen)
-        master.bind('<Escape>', self.close)
-
         self.parent_frame = Frame(self.master)
         self.parent_frame.pack(fill=BOTH, expand=TRUE)
 
 
     def display_calibration_screen(self):
         calibration_screen = CalibrationScreen(self.master, self.parent_frame)
-
-    def toggle_fullscreen(self, event=None):
-        overrideredirect_value = root.overrideredirect()
-        if overrideredirect_value:
-            root.overrideredirect(0)
-        else:
-            root.overrideredirect(1)
-
-    def close(self, event=None):
-        self.master.destroy()
-
