@@ -37,10 +37,10 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Apply binary thresholding to get a black and white image
-    _, binary = cv2.threshold(gray, 230, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
 
     # OPTIONAL: Clean up noise using morphological operations (e.g., closing)
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     cleaned = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
 
     # Apply dilation to thicken the text
@@ -120,13 +120,13 @@ def preprocess_image(image_path):
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
     # Get the bounding box of the largest contour (the whiteboard's black border)
-    x, y, w, h = cv2.boundingRect(contours[0])
+    # x, y, w, h = cv2.boundingRect(contours[0])
 
     # Crop out the region of interest (whiteboard without the black border)
-    img_cropped = img[y:y + h, x:x + w]
-    binary_cropped = binary[y:y + h, x:x + w]
+    # img_cropped = img[y:y + h, x:x + w]
+    # binary_cropped = binary[y:y + h, x:x + w]
 
-    return img_cropped, binary_cropped, img, binary
+    return img, binary, img, binary
 
 
 
@@ -141,8 +141,9 @@ def extract_equation_groups(image_path):
     img_cropped, binary_cropped, img, binary = preprocess_image(image_path)
 
     # Apply dilation to join nearby contours
-    kernel = np.ones((10, 10), np.uint8)  # Adjust the kernel size as needed
+    kernel = np.ones((20, 20), np.uint8)  # Adjust the kernel size as needed
     dilated = cv2.dilate(binary_cropped, kernel, iterations=1)
+    cv2.imwrite("dilated.png", dilated)
 
     # Find contours in the dilated binary image (equation groups)
     contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -153,8 +154,13 @@ def extract_equation_groups(image_path):
     # Prepare a list to store cropped equation images and their bounding boxes
     equation_groups = []
 
+    img_with_contours = img_cropped.copy()
+    cv2.drawContours(img_with_contours, contours, -1, (0, 255, 0), 3)  # Draw contours in green
+    cv2.imwrite("contours_debug.png", img_with_contours)
+
     # Iterate through each contour and crop the equation group
-    for contour in contours:
+    for cindex, contour in enumerate(contours):
+
         # Get the bounding box of the contour (x, y, width, height)
         x, y, w, h = cv2.boundingRect(contour)
 
@@ -247,7 +253,7 @@ def show_extracted_equations(equation_images):
 
 
 # Function to check if an image is over a certain percentage of dark pixels
-def over_n_black(image, n=80, threshold=50):
+def over_n_black(image, n=80, threshold=30):
     """
     Checks if more than 'n' percent of the pixels in the image are considered dark (below the 'threshold').
 
@@ -274,7 +280,7 @@ def over_n_black(image, n=80, threshold=50):
     return dark_percentage > n
 
 
-def process_equations(image_path = "frame_0.jpg"):
+def process_equations(image_path = "goodimg.jpg"):
 
     process_whiteboard_image(image_path, "output_image_with_text.jpg")
 
@@ -302,6 +308,7 @@ def process_equations(image_path = "frame_0.jpg"):
     # Calculate the total area (width * height)
     total_area = image_width * image_height
 
+    print(f"There are {len(equation_images)} equations in total.")
     for index, eq in enumerate(equation_images):
         # Convert the OpenCV image (NumPy array) to a PIL image
         pil_image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
@@ -332,7 +339,6 @@ def process_equations(image_path = "frame_0.jpg"):
             # Clean up the LaTeX string for Matplotlib
             # Remove $$ from the LaTeX string if it has them
             latex_string = [l.replace('$$', '') for l in latex_string]
-            latex_string = [l.replace('\\', "\\\\") for l in latex_string]
             latex_string = [l.replace('\n', "") for l in latex_string]
 
             # Optional: Wrap the entire string in single-dollar signs for inline math
@@ -351,7 +357,7 @@ def process_equations(image_path = "frame_0.jpg"):
 
         # Save each plot as an image file
         plt.savefig(f"equation_{index}.png", bbox_inches='tight')
-        plt.close()  # Close the figure to free memory
+        plt.close()
 
 
 if __name__ == "__main__":
