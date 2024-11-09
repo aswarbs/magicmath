@@ -1,0 +1,114 @@
+OLD, MALE, William the Conqueror
+OLD, FEMALE, Eleanor of Aquitaine
+YOUNG, MALE, Richard the Lionheart
+YOUNG, FEMALE, Joan of Arc
+MIDDLEAGED, MALE, Geoffrey Chaucer
+MIDDLEAGED, FEMALE, Hildegard of Bingen
+OLD, MALE, Henry II of England
+OLD, FEMALE, Matilda of Scotland
+YOUNG, MALE, Edward the Black Prince
+YOUNG, FEMALE, Blanche of Castile
+MIDDLEAGED, MALE, Philip the Fair
+MIDDLEAGED, FEMALE, Isabella of France
+OLD, MALE, Robert the Bruce
+OLD, FEMALE, Constance of Castile
+YOUNG, MALE, Louis IX of France
+YOUNG, FEMALE, Catherine of Aragon
+MIDDLEAGED, MALE, King John of England
+MIDDLEAGED, FEMALE, Eleanor of Provence
+OLD, MALE, Charles the Bald
+OLD, FEMALE, Margaret of Anjou
+YOUNG, MALE, Alfonso X of Castile
+YOUNG, FEMALE, Margaret of Scotland
+MIDDLEAGED, MALE, Hugh Capet
+MIDDLEAGED, FEMALE, Joan of Navarre
+OLD, MALE, Edward III of England
+OLD, FEMALE, Agnes of Poitou
+YOUNG, MALE, Louis the German
+YOUNG, FEMALE, Mary of Guelders
+MIDDLEAGED, MALE, Richard II of England
+MIDDLEAGED, FEMALE, Blanche of Navarre
+OLD, MALE, Henry the Fowler
+OLD, FEMALE, Agnes of Hohenstaufen
+YOUNG, MALE, William Marshal
+YOUNG, FEMALE, Alice of Champagne
+MIDDLEAGED, MALE, Ferdinand III of Castile
+MIDDLEAGED, FEMALE, Eleanor of Castile
+OLD, MALE, Louis VII of France
+OLD, FEMALE, Berengaria of Navarre
+YOUNG, MALE, John of Gaunt
+YOUNG, FEMALE, Anne of Bohemia
+MIDDLEAGED, MALE, Baldwin IV of Jerusalem
+MIDDLEAGED, FEMALE, Eleanor of Aquitaine
+OLD, MALE, Baldwin V of Jerusalem
+OLD, FEMALE, Emma of Normandy
+YOUNG, MALE, Edward VI of England
+YOUNG, FEMALE, Elizabeth of York
+MIDDLEAGED, MALE, Richard the Lionheart
+MIDDLEAGED, FEMALE, Blanche of Artois
+OLD, MALE, Stephen of Blois
+OLD, FEMALE, Sibylla of Jerusalem
+YOUNG, MALE, Philip II Augustus
+YOUNG, FEMALE, Margaret of Denmark
+MIDDLEAGED, MALE, Otto I, Holy Roman Emperor
+MIDDLEAGED, FEMALE, Eleanor of Provence
+OLD, MALE, Godfrey of Bouillon
+OLD, FEMALE, Helena of Constantinople
+YOUNG, MALE, Robert of Normandy
+YOUNG, FEMALE, Margaret of Anjou
+MIDDLEAGED, MALE, Bernard of Clairvaux
+MIDDLEAGED, FEMALE, Beatrix of Castile
+OLD, MALE, Conrad II, Holy Roman Emperor
+OLD, FEMALE, Agnes of Merania
+YOUNG, MALE, Charles the Bold
+YOUNG, FEMALE, Marguerite of Flanders
+MIDDLEAGED, MALE, Henry III of England
+MIDDLEAGED, FEMALE, Cecily Neville
+OLD, MALE, Louis XI of France
+OLD, FEMALE, Blanche of Castile
+YOUNG, MALE, Frederick II, Holy Roman Emperor
+YOUNG, FEMALE, Matilda of Tuscany
+MIDDLEAGED, MALE, Alfonso IV of Aragon
+MIDDLEAGED, FEMALE, Emma of Normandy
+OLD, MALE, Hugh de Payens
+OLD, FEMALE, Isabella of Angoulême
+YOUNG, MALE, Philip IV of France
+YOUNG, FEMALE, Eleanor of Aquitaine
+MIDDLEAGED, MALE, Richard III of England
+MIDDLEAGED, FEMALE, Joan of Arc
+OLD, MALE, Henry IV of France
+OLD, FEMALE, Anne of Brittany
+YOUNG, MALE, Jean de La Valette
+YOUNG, FEMALE, Isabeau of Bavaria
+MIDDLEAGED, MALE, Henry V of England
+MIDDLEAGED, FEMALE, Blanche of Navarre
+OLD, MALE, Charles of Anjou
+OLD, FEMALE, Blanche of Navarre
+YOUNG, MALE, Louis XII of France
+YOUNG, FEMALE, Margaret of Savoy
+MIDDLEAGED, MALE, John I of England
+MIDDLEAGED, FEMALE, Catherine of Valois
+OLD, MALE, Duke of Burgundy
+OLD, FEMALE, Elizabeth of York
+YOUNG, MALE, Richard de Clare
+YOUNG, FEMALE, Elizabeth Woodville
+MIDDLEAGED, MALE, Edward IV of England
+MIDDLEAGED, FEMALE, Anne Neville
+OLD, MALE, Henry II of England
+OLD, FEMALE, Joan of Navarre
+YOUNG, MALE, Thomas Becket
+YOUNG, FEMALE, Matilda of Scotland
+MIDDLEAGED, MALE, Simon de Montfort
+MIDDLEAGED, FEMALE, Eleanor of Aquitaine
+OLD, MALE, William of Normandy
+OLD, FEMALE, Isabella of France
+YOUNG, MALE, Walter the Younger
+YOUNG, FEMALE, Blanche of Castile
+MIDDLEAGED, MALE, William the Conqueror
+MIDDLEAGED, FEMALE, Berengaria of Navarre
+OLD, MALE, Richard III of England
+OLD, FEMALE, Margaret of Anjou
+YOUNG, MALE, Edmund Ironside
+YOUNG, FEMALE, Emma of Normandy
+MIDDLEAGED, MALE, Roger II of Sicily
+MIDDLEAGED, FEMALE, Beatrice of Aragon

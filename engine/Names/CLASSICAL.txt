@@ -1,0 +1,108 @@
+OLD, MALE, Marcus Tullius Cicero
+OLD, FEMALE, Cornelia Scipionis
+YOUNG, MALE, Gaius Julius Caesar
+YOUNG, FEMALE, Julia Domna
+MIDDLEAGED, MALE, Lucius Cornelius Sulla
+MIDDLEAGED, FEMALE, Agrippina the Younger
+OLD, MALE, Publius Vergilius Maro
+OLD, FEMALE, Livia Drusilla
+YOUNG, MALE, Tiberius Claudius Nero
+YOUNG, FEMALE, Antonia Minor
+MIDDLEAGED, MALE, Octavian Augustus
+MIDDLEAGED, FEMALE, Calpurnia
+OLD, MALE, Cicero
+OLD, FEMALE, Fulvia
+YOUNG, MALE, Quintus Fabius Maximus
+YOUNG, FEMALE, Tullia Ciceronis
+MIDDLEAGED, MALE, Lucius Junius Brutus
+MIDDLEAGED, FEMALE, Portia Cato
+OLD, MALE, Gnaeus Pompeius Magnus
+OLD, FEMALE, Vipsania Agrippina
+YOUNG, MALE, M. Valerius Corvus
+YOUNG, FEMALE, Agrippina the Elder
+MIDDLEAGED, MALE, Mark Antony
+MIDDLEAGED, FEMALE, Cleopatra VII
+OLD, MALE, Gaius Marius
+OLD, FEMALE, Julia Augusta
+YOUNG, MALE, Titus Flavius Vespasianus
+YOUNG, FEMALE, Domitia Longina
+MIDDLEAGED, MALE, Aulus Vitellius
+MIDDLEAGED, FEMALE, Julia Livilla
+OLD, MALE, Gaius Cassius Longinus
+OLD, FEMALE, Pompeia Magna
+YOUNG, MALE, Aemilius Paullus
+YOUNG, FEMALE, Claudia Octavia
+MIDDLEAGED, MALE, Publius Aemilius Lepidus
+MIDDLEAGED, FEMALE, Antonia the Elder
+OLD, MALE, Marcus Aurelius
+OLD, FEMALE, Faustina the Younger
+YOUNG, MALE, Decimus Brutus
+YOUNG, FEMALE, Octavia the Younger
+MIDDLEAGED, MALE, Lucius Calpurnius Piso
+MIDDLEAGED, FEMALE, Junia Tertia
+OLD, MALE, Scaevola
+OLD, FEMALE, Sempronia
+YOUNG, MALE, Gnaeus Domitius Ahenobarbus
+YOUNG, FEMALE, Messalina
+MIDDLEAGED, MALE, Gaius Calpurnius Piso
+MIDDLEAGED, FEMALE, Livilla
+OLD, MALE, Marcus Licinius Crassus
+OLD, FEMALE, Valeria Messalina
+YOUNG, MALE, Spurius Cassius
+YOUNG, FEMALE, Fabia
+MIDDLEAGED, MALE, Lucius Sergius Catilina
+MIDDLEAGED, FEMALE, Calpurnia Pisonis
+OLD, MALE, Aulus Cornelius Celsus
+OLD, FEMALE, Agrippina the Elder
+YOUNG, MALE, Gaius Appuleius Diocles
+YOUNG, FEMALE, Julia Livilla
+MIDDLEAGED, MALE, Marcus Fabius Quintilianus
+MIDDLEAGED, FEMALE, Cornelia Africana
+OLD, MALE, Cicero the Orator
+OLD, FEMALE, Hortensia
+YOUNG, MALE, Nero Claudius Caesar
+YOUNG, FEMALE, Lollia Paulina
+MIDDLEAGED, MALE, Titus Pomponius Atticus
+MIDDLEAGED, FEMALE, Sempronia Graccha
+OLD, MALE, Claudius Gothicus
+OLD, FEMALE, Antonia Minor
+YOUNG, MALE, Gaius Vibius Trebonianus Gallus
+YOUNG, FEMALE, Julia the Elder
+MIDDLEAGED, MALE, Tiberius Sempronius Gracchus
+MIDDLEAGED, FEMALE, Livia Drusilla
+OLD, MALE, Publius Ovidius Naso
+OLD, FEMALE, Cornelia
+YOUNG, MALE, Aulus Platorius Nepos
+YOUNG, FEMALE, Livia Augusta
+MIDDLEAGED, MALE, Marcus Aurelius Probus
+MIDDLEAGED, FEMALE, Valeria Messalina
+OLD, MALE, Tiberius Claudius Nero
+OLD, FEMALE, Fulvia
+YOUNG, MALE, Marcus Aurelius Antoninus
+YOUNG, FEMALE, Pompeia
+MIDDLEAGED, MALE, Lucius Antonius
+MIDDLEAGED, FEMALE, Julia Domna
+OLD, MALE, Marcus Junius Brutus
+OLD, FEMALE, Tullia the Younger
+YOUNG, MALE, Gaius Valerius Catullus
+YOUNG, FEMALE, Claudia
+MIDDLEAGED, MALE, Publius Cornelius Scipio
+MIDDLEAGED, FEMALE, Cornelia the Elder
+OLD, MALE, Lucius Cornelius Sulla Felix
+OLD, FEMALE, Pomponia Graecina
+YOUNG, MALE, Gaius Carus
+YOUNG, FEMALE, Tullia the Younger
+MIDDLEAGED, MALE, Gaius Julius Vindex
+MIDDLEAGED, FEMALE, Calpurnia
+OLD, MALE, Marcus Licinius Crassus
+OLD, FEMALE, Livia
+YOUNG, MALE, Quintus Curtius Rufus
+YOUNG, FEMALE, Julia the Younger
+MIDDLEAGED, MALE, Publius Cornelius Tacitus
+MIDDLEAGED, FEMALE, Claudia Octavia
+OLD, MALE, Aemilius Paulus
+OLD, FEMALE, Antonia Major
+YOUNG, MALE, M. Porcius Cato
+YOUNG, FEMALE, Livia the Elder
+MIDDLEAGED, MALE, Tiberius Claudius Nero
+MIDDLEAGED, FEMALE, Hortensia
