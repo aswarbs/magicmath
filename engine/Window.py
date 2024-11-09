@@ -15,4 +15,5 @@ class GameWindow():
         # Run the main event loop
         while True:
             _ = [e.draw(self.canvas) for e in self.entities]
+            _ = [e.think() for e in self.entities]
             self.master.update()
