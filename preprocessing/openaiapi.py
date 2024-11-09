@@ -34,11 +34,8 @@ def get_latex_equation_from_pillow(pillow_image):
     return response['choices'][0]['text']
 
 
-# Example usage
-# Load a Pillow image (for example from a file or any source)
-image_path = 'path_to_your_image_of_equation.jpg'
-pillow_image = Image.open(image_path)
-
-# Get the LaTeX equation
-latex_equation = get_latex_equation_from_pillow(pillow_image)
-print(f"Extracted LaTeX Equation: {latex_equation}")
+if __name__ == "__main__":
+    image_path = 'path_to_your_image_of_equation.jpg'
+    pillow_image = Image.open(image_path)
+    latex_equation = get_latex_equation_from_pillow(pillow_image)
+    print(f"Extracted LaTeX Equation: {latex_equation}")
