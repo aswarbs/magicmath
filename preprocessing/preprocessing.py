@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import py2tex
 from PIL import Image
-
+from openaiapi import *
 
 # Function to adjust brightness and contrast of the image
 def adjust_brightness_contrast(img, brightness=50, contrast=30):
@@ -334,6 +334,10 @@ def process_equations(image_path = "goodimg.jpg"):
 
         # Extract LaTeX from the PIL image
         try:
+
+            latex_string = get_latex_equation_from_pillow(pil_image)
+
+            """
             latex_string = p.extract_latex_from_image(pil_image)
 
             # Clean up the LaTeX string for Matplotlib
@@ -343,6 +347,7 @@ def process_equations(image_path = "goodimg.jpg"):
 
             # Optional: Wrap the entire string in single-dollar signs for inline math
             latex_string = [f"{l}" for l in latex_string]
+            """
 
         except Exception as e:
             latex_string = "Extraction failed"
