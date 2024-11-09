@@ -1,0 +1,108 @@
+OLD, MALE, Isambard Kingdom Brunel
+OLD, FEMALE, Florence Nightingale
+YOUNG, MALE, Thomas Edison
+YOUNG, FEMALE, Ada Lovelace
+MIDDLEAGED, MALE, Karl Marx
+MIDDLEAGED, FEMALE, Mary Wollstonecraft
+OLD, MALE, George Stephenson
+OLD, FEMALE, Queen Victoria
+YOUNG, MALE, Nikola Tesla
+YOUNG, FEMALE, Clara Barton
+MIDDLEAGED, MALE, Andrew Carnegie
+MIDDLEAGED, FEMALE, Emmeline Pankhurst
+OLD, MALE, Samuel Morse
+OLD, FEMALE, Elizabeth Cady Stanton
+YOUNG, MALE, James Watt
+YOUNG, FEMALE, Florence Welch
+MIDDLEAGED, MALE, Henry Ford
+MIDDLEAGED, FEMALE, Sarah Bernhardt
+OLD, MALE, Charles Darwin
+OLD, FEMALE, Harriet Beecher Stowe
+YOUNG, MALE, John D. Rockefeller
+YOUNG, FEMALE, Susan B. Anthony
+MIDDLEAGED, MALE, Thomas Huxley
+MIDDLEAGED, FEMALE, Elizabeth Garrett Anderson
+OLD, MALE, Alexander Graham Bell
+OLD, FEMALE, Queen Elizabeth I
+YOUNG, MALE, Mark Twain
+YOUNG, FEMALE, Clara Schumann
+MIDDLEAGED, MALE, Louis Pasteur
+MIDDLEAGED, FEMALE, Marie Curie
+OLD, MALE, George Washington Carver
+OLD, FEMALE, Mary Shelley
+YOUNG, MALE, Henry Bessemer
+YOUNG, FEMALE, Annie Oakley
+MIDDLEAGED, MALE, John Stuart Mill
+MIDDLEAGED, FEMALE, Virginia Woolf
+OLD, MALE, Benjamin Disraeli
+OLD, FEMALE, Harriet Tubman
+YOUNG, MALE, J.P. Morgan
+YOUNG, FEMALE, Louisa May Alcott
+MIDDLEAGED, MALE, Thomas Paine
+MIDDLEAGED, FEMALE, Charlotte Perkins Gilman
+OLD, MALE, John Locke
+OLD, FEMALE, Queen Elizabeth II
+YOUNG, MALE, Frank Woolworth
+YOUNG, FEMALE, Mary Wollstonecraft
+MIDDLEAGED, MALE, Edwin L. Drake
+MIDDLEAGED, FEMALE, Margaret Thatcher
+OLD, MALE, William Wordsworth
+OLD, FEMALE, Florence Nightingale
+YOUNG, MALE, Louis Comfort Tiffany
+YOUNG, FEMALE, Amelia Earhart
+MIDDLEAGED, MALE, Robert Fulton
+MIDDLEAGED, FEMALE, Jane Addams
+OLD, MALE, Samuel Slater
+OLD, FEMALE, Clara Barton
+YOUNG, MALE, Thomas Edison
+YOUNG, FEMALE, Anne Sullivan
+MIDDLEAGED, MALE, Alfred Nobel
+MIDDLEAGED, FEMALE, Florence Nightingale
+OLD, MALE, Nikola Tesla
+OLD, FEMALE, Elizabeth Blackwell
+YOUNG, MALE, Warren Buffet
+YOUNG, FEMALE, Martha Graham
+MIDDLEAGED, MALE, Louis Pasteur
+MIDDLEAGED, FEMALE, Rosalind Franklin
+OLD, MALE, Andrew Carnegie
+OLD, FEMALE, Mary Cassatt
+YOUNG, MALE, Michael Faraday
+YOUNG, FEMALE, Clara Zetkin
+MIDDLEAGED, MALE, Charles Goodyear
+MIDDLEAGED, FEMALE, Emmeline Pankhurst
+OLD, MALE, Henry Ford
+OLD, FEMALE, Eleanor Roosevelt
+YOUNG, MALE, John Rockefeller
+YOUNG, FEMALE, Margaret Sanger
+MIDDLEAGED, MALE, George Westinghouse
+MIDDLEAGED, FEMALE, Susan B. Anthony
+OLD, MALE, Thomas Edison
+OLD, FEMALE, Grace Hopper
+YOUNG, MALE, Thomas Edison
+YOUNG, FEMALE, Kate Chopin
+MIDDLEAGED, MALE, Isambard Kingdom Brunel
+MIDDLEAGED, FEMALE, Mary Shelley
+OLD, MALE, James Watt
+OLD, FEMALE, Harriet Beecher Stowe
+YOUNG, MALE, James Clerk Maxwell
+YOUNG, FEMALE, Clara Barton
+MIDDLEAGED, MALE, James Watt
+MIDDLEAGED, FEMALE, Margaret Thatcher
+OLD, MALE, George Stephenson
+OLD, FEMALE, Florence Nightingale
+YOUNG, MALE, Nikola Tesla
+YOUNG, FEMALE, Harriet Tubman
+MIDDLEAGED, MALE, J.P. Morgan
+MIDDLEAGED, FEMALE, Martha Graham
+OLD, MALE, Benjamin Franklin
+OLD, FEMALE, Louisa May Alcott
+YOUNG, MALE, Frank Woolworth
+YOUNG, FEMALE, Ada Lovelace
+MIDDLEAGED, MALE, John D. Rockefeller
+MIDDLEAGED, FEMALE, Emmeline Pankhurst
+OLD, MALE, Alexander Graham Bell
+OLD, FEMALE, Mary Shelley
+YOUNG, MALE, Mark Twain
+YOUNG, FEMALE, Clara Schumann
+MIDDLEAGED, MALE, Henry Ford
+MIDDLEAGED, FEMALE, Jane Addams

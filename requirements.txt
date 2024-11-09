@@ -1,4 +1,6 @@
-Pillow
-matplotlib
-openai
-requests
+Pillow~=11.0.0
+matplotlib~=3.9.2
+openai~=1.54.3
+requests~=2.32.3
+tqdm~=4.67.0
+sympy~=1.13.3

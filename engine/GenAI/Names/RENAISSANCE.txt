@@ -1,0 +1,114 @@
+OLD, MALE, Leonardo da Vinci
+OLD, FEMALE, Isabella d'Este
+YOUNG, MALE, Michelangelo Buonarroti
+YOUNG, FEMALE, Catherine de' Medici
+MIDDLEAGED, MALE, Niccolò Machiavelli
+MIDDLEAGED, FEMALE, Lucrezia Borgia
+OLD, MALE, Raphael Sanzio
+OLD, FEMALE, Eleonora di Toledo
+YOUNG, MALE, Cesare Borgia
+YOUNG, FEMALE, Sofonisba Anguissola
+MIDDLEAGED, MALE, Galileo Galilei
+MIDDLEAGED, FEMALE, Marguerite de Navarre
+OLD, MALE, Lorenzo de' Medici
+OLD, FEMALE, Caterina Sforza
+YOUNG, MALE, Andrea Palladio
+YOUNG, FEMALE, Veronica Franco
+MIDDLEAGED, MALE, Francesco Petrarca
+MIDDLEAGED, FEMALE, Laura de Noves
+OLD, MALE, Giovanni Bellini
+OLD, FEMALE, Bianca Maria Visconti
+YOUNG, MALE, Titian Vecellio
+YOUNG, FEMALE, Luisa de Medici
+MIDDLEAGED, MALE, Desiderius Erasmus
+MIDDLEAGED, FEMALE, Elizabeth I of England
+OLD, MALE, Baldassare Castiglione
+OLD, FEMALE, Giovanna d'Aragona
+YOUNG, MALE, Albrecht Dürer
+YOUNG, FEMALE, Anne Boleyn
+MIDDLEAGED, MALE, Thomas More
+MIDDLEAGED, FEMALE, Caterina de Medici
+OLD, MALE, Michelangelo Merisi da Caravaggio
+OLD, FEMALE, Margaret of Austria
+YOUNG, MALE, Donatello di Niccolò di Betto Bardi
+YOUNG, FEMALE, Mary Stuart
+MIDDLEAGED, MALE, Johannes Gutenberg
+MIDDLEAGED, FEMALE, Isabella I of Castile
+OLD, MALE, Andrea del Verrocchio
+OLD, FEMALE, Beatrice d'Este
+YOUNG, MALE, Sandro Botticelli
+YOUNG, FEMALE, Marguerite de Valois
+MIDDLEAGED, MALE, Pietro Aretino
+MIDDLEAGED, FEMALE, Giovanna d'Arco
+OLD, MALE, Filippo Brunelleschi
+OLD, FEMALE, Isabella of Portugal
+YOUNG, MALE, Raphael
+YOUNG, FEMALE, Clara de Clérgica
+MIDDLEAGED, MALE, John Calvin
+MIDDLEAGED, FEMALE, Teresa of Ávila
+OLD, MALE, Thomas Cranmer
+OLD, FEMALE, Jane Seymour
+YOUNG, MALE, Benvenuto Cellini
+YOUNG, FEMALE, Laura Battiferri
+MIDDLEAGED, MALE, Michel de Montaigne
+MIDDLEAGED, FEMALE, Mary Wollstonecraft
+OLD, MALE, William Shakespeare
+OLD, FEMALE, Anne Hathaway
+YOUNG, MALE, Francesco Guicciardini
+YOUNG, FEMALE, Diana of Poitiers
+MIDDLEAGED, MALE, Giovanni da Verrazzano
+MIDDLEAGED, FEMALE, Lucrezia Marinella
+OLD, MALE, Giovanni Pierluigi da Palestrina
+OLD, FEMALE, Margaret Tudor
+YOUNG, MALE, Pietro Bembo
+YOUNG, FEMALE, Elisabetta Gonzaga
+MIDDLEAGED, MALE, Andrea Doria
+MIDDLEAGED, FEMALE, Caterina Cornaro
+OLD, MALE, Giorgio Vasari
+OLD, FEMALE, Maria de' Medici
+YOUNG, MALE, Francesco Salviati
+YOUNG, FEMALE, Beatrice Cenci
+MIDDLEAGED, MALE, Jacopo da Pontormo
+MIDDLEAGED, FEMALE, Maddalena Casulana
+OLD, MALE, Giorgio Ghisi
+OLD, FEMALE, Veronica de' Medici
+YOUNG, MALE, Francesco di Giorgio Martini
+YOUNG, FEMALE, Lavinia Fontana
+MIDDLEAGED, MALE, Ludovico Ariosto
+MIDDLEAGED, FEMALE, Isabella of Castile
+OLD, MALE, Donato Bramante
+OLD, FEMALE, Beatrice d'Este
+YOUNG, MALE, Paolo Veronese
+YOUNG, FEMALE, Maria de' Medici
+MIDDLEAGED, MALE, Giovanni da Bologna
+MIDDLEAGED, FEMALE, Anna Boleyn
+OLD, MALE, Cesare Borgia
+OLD, FEMALE, Francesca Caccini
+YOUNG, MALE, Michelangelo Buonarroti
+YOUNG, FEMALE, Lucrezia Borgia
+MIDDLEAGED, MALE, Leonardo da Vinci
+MIDDLEAGED, FEMALE, Isabella d'Este
+OLD, MALE, Botticelli
+OLD, FEMALE, Catherine de Medici
+YOUNG, MALE, Carlo Borromeo
+YOUNG, FEMALE, Isabella of Aragon
+MIDDLEAGED, MALE, Aeneas Silvius Piccolomini
+MIDDLEAGED, FEMALE, Mary of Guise
+OLD, MALE, Andrea Mantegna
+OLD, FEMALE, Margaret of Savoy
+YOUNG, MALE, Michelangelo Merisi
+YOUNG, FEMALE, Laura de Noves
+MIDDLEAGED, MALE, Pierre de Ronsard
+MIDDLEAGED, FEMALE, Agnes of Hohenstaufen
+OLD, MALE, Paolo Uccello
+OLD, FEMALE, Bianca di Savoia
+YOUNG, MALE, Bernardino Luini
+YOUNG, FEMALE, Margaret of Navarre
+MIDDLEAGED, MALE, Sir Thomas Wyatt
+MIDDLEAGED, FEMALE, Mary I of England
+OLD, MALE, Josquin des Prez
+OLD, FEMALE, Marguerite de Navarre
+YOUNG, MALE, John Knox
+YOUNG, FEMALE, Teresa of Ávila
+MIDDLEAGED, MALE, Raphael Sanzio
+MIDDLEAGED, FEMALE, Catherine de' Medici
