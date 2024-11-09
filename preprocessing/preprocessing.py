@@ -130,10 +130,12 @@ def preprocess_image(image_path):
 
 
 
+
 def extract_equation_groups(image_path):
     """
     This function takes the image path of black equations on a white whiteboard,
     removes the black border, and breaks the image into individual equation groups.
+    It returns the cropped equations along with their full bounding boxes.
     """
     # Preprocess the image to remove the black border
     img_cropped, binary_cropped, img, binary = preprocess_image(image_path)
@@ -148,12 +150,12 @@ def extract_equation_groups(image_path):
     # Sort contours based on their y-coordinate (top-to-bottom order)
     contours = sorted(contours, key=lambda c: cv2.boundingRect(c)[1])
 
-    # Prepare a list to store cropped equation images
-    equation_images = []
+    # Prepare a list to store cropped equation images and their bounding boxes
+    equation_groups = []
 
     # Iterate through each contour and crop the equation group
     for contour in contours:
-        # Get the bounding box of the contour
+        # Get the bounding box of the contour (x, y, width, height)
         x, y, w, h = cv2.boundingRect(contour)
 
         # Ensure the bounding box is large enough to contain text
@@ -177,9 +179,14 @@ def extract_equation_groups(image_path):
 
             # Only add the original crop to the list if the text percentage is above 10%
             if text_percentage >= 10:
-                equation_images.append(cropped_equation)  # Append the original crop
+                # Append the equation crop along with its full bounding box (x, y, w, h)
+                equation_groups.append({
+                    'equation': cropped_equation,  # Cropped equation image
+                    'bounding_box': (x, y, w, h)  # Full bounding box (x, y, width, height)
+                })
 
-    return equation_images, img_cropped, binary_cropped
+    return equation_groups, img_cropped, binary_cropped
+
 
 
 
@@ -239,32 +246,6 @@ def show_extracted_equations(equation_images):
     plt.show()
 
 
-process_whiteboard_image("frame_0.jpg", "output_image_with_text.jpg")
-
-# Example usage
-image_path = "output_image_with_text.jpg"  # Replace with your image path
-equation_images, img_cropped, binary_cropped = extract_equation_groups(image_path)
-
-# Show the preprocessed images
-show_preprocessed_image(img_cropped, binary_cropped, img_cropped, binary_cropped)
-
-# Show the extracted equations (after preprocessing)
-show_extracted_equations(equation_images)
-
-# Initialize the formula extractor
-p = py2tex.FormulaExtractor()
-
-# Example values for the total area (adjust based on your canvas or reference size)
-# Open the image
-pil_image = Image.open(image_path)
-
-# Get the image dimensions (width, height)
-image_width, image_height = pil_image.size
-
-# Calculate the total area (width * height)
-total_area = image_width * image_height
-
-
 # Function to check if an image is over a certain percentage of dark pixels
 def over_n_black(image, n=80, threshold=50):
     """
@@ -293,56 +274,85 @@ def over_n_black(image, n=80, threshold=50):
     return dark_percentage > n
 
 
+def process_equations(image_path = "frame_0.jpg"):
 
-for index, eq in enumerate(equation_images):
-    # Convert the OpenCV image (NumPy array) to a PIL image
-    pil_image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
+    process_whiteboard_image(image_path, "output_image_with_text.jpg")
 
-    # Get the dimensions of the image
+    # Example usage
+    image_path = "output_image_with_text.jpg"  # Replace with your image path
+    equation_groups, img_cropped, binary_cropped = extract_equation_groups(image_path)
+    equation_images = [e["equation"] for e in equation_groups]
+
+    # Show the preprocessed images
+    show_preprocessed_image(img_cropped, binary_cropped, img_cropped, binary_cropped)
+
+    # Show the extracted equations (after preprocessing)
+    show_extracted_equations(equation_images)
+
+    # Initialize the formula extractor
+    p = py2tex.FormulaExtractor()
+
+    # Example values for the total area (adjust based on your canvas or reference size)
+    # Open the image
+    pil_image = Image.open(image_path)
+
+    # Get the image dimensions (width, height)
     image_width, image_height = pil_image.size
 
-    # Calculate the area of the image
-    image_area = image_width * image_height
+    # Calculate the total area (width * height)
+    total_area = image_width * image_height
 
-    # Calculate the percentage of the image area compared to the total area
-    area_percentage = (image_area / total_area) * 100
+    for index, eq in enumerate(equation_images):
+        # Convert the OpenCV image (NumPy array) to a PIL image
+        pil_image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
 
-    # Skip if the image takes up more than 40% of the total area
-    if area_percentage > 40:
-        print(f"Skipping image {index}, as it takes up {area_percentage:.2f}% of the total area.")
-        continue  # Skip this iteration
+        # Get the dimensions of the image
+        image_width, image_height = pil_image.size
 
-    # Check if the image is over 80% black and skip if true
-    if over_n_black(pil_image):
-        print(f"Skipping image {index}, as it is over 80% black.")
-        continue  # Skip this iteration
+        # Calculate the area of the image
+        image_area = image_width * image_height
 
-    # Extract LaTeX from the PIL image
-    try:
-        latex_string = p.extract_latex_from_image(pil_image)
+        # Calculate the percentage of the image area compared to the total area
+        area_percentage = (image_area / total_area) * 100
 
-        # Clean up the LaTeX string for Matplotlib
-        # Remove $$ from the LaTeX string if it has them
-        latex_string = [l.replace('$$', '') for l in latex_string]
-        latex_string = [l.replace('\\', "\\\\") for l in latex_string]
-        latex_string = [l.replace('\n', "") for l in latex_string]
+        # Skip if the image takes up more than 40% of the total area
+        if area_percentage > 40:
+            print(f"Skipping image {index}, as it takes up {area_percentage:.2f}% of the total area.")
+            continue  # Skip this iteration
 
-        # Optional: Wrap the entire string in single-dollar signs for inline math
-        latex_string = [f"{l}" for l in latex_string]
+        # Check if the image is over 80% black and skip if true
+        if over_n_black(pil_image):
+            print(f"Skipping image {index}, as it is over 80% black.")
+            continue  # Skip this iteration
 
-    except Exception as e:
-        latex_string = "Extraction failed"
-        print(e)
+        # Extract LaTeX from the PIL image
+        try:
+            latex_string = p.extract_latex_from_image(pil_image)
 
-    # Create a figure for each equation
-    plt.figure(figsize=(6, 4))
-    plt.imshow(pil_image)
-    plt.axis('off')
-    plt.title(f"Equation {index}")
-    plt.text(0.5, -0.1, latex_string, ha='center', va='top', wrap=True, transform=plt.gca().transAxes)
+            # Clean up the LaTeX string for Matplotlib
+            # Remove $$ from the LaTeX string if it has them
+            latex_string = [l.replace('$$', '') for l in latex_string]
+            latex_string = [l.replace('\\', "\\\\") for l in latex_string]
+            latex_string = [l.replace('\n', "") for l in latex_string]
 
-    # Save each plot as an image file
-    plt.savefig(f"equation_{index}.png", bbox_inches='tight')
-    plt.close()  # Close the figure to free memory
+            # Optional: Wrap the entire string in single-dollar signs for inline math
+            latex_string = [f"{l}" for l in latex_string]
 
-print("Saved each equation plot as a separate PNG file.")
+        except Exception as e:
+            latex_string = "Extraction failed"
+            print(e)
+
+        # Create a figure for each equation
+        plt.figure(figsize=(6, 4))
+        plt.imshow(pil_image)
+        plt.axis('off')
+        plt.title(f"Equation {index}")
+        plt.text(0.5, -0.1, latex_string, ha='center', va='top', wrap=True, transform=plt.gca().transAxes)
+
+        # Save each plot as an image file
+        plt.savefig(f"equation_{index}.png", bbox_inches='tight')
+        plt.close()  # Close the figure to free memory
+
+
+if __name__ == "__main__":
+    process_equations()
