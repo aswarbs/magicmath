@@ -10,5 +10,4 @@ if __name__ == "__main__":
     pubert = MProfile(app.master, gen_profile(Era.INFORMATION))
     app.entities.append(pubert)
     pubert.speak("wefmoewmfkmefo")
-
     app.mainloop()
