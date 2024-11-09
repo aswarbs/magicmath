@@ -11,3 +11,4 @@ def get_answer(latex_str: str) -> str:
     query_url = f"http://api.wolframalpha.com/v1/result?appid={appid}&input={query}&output=JSON"
     r = requests.get(query_url)
     pprint(r.json())
+    return str(r.text)
