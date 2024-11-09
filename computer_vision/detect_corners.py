@@ -27,6 +27,7 @@ class CameraCalibrator:
         run_thread.start()
 
     def mainloop(self):
+
         while 1:
             # Capture a single frame from the camera
             ret, self.frame = self.cap.read()
@@ -114,10 +115,10 @@ class CameraCalibrator:
 
         # Draw all contours on the frame
         cv2.drawContours(enhanced_frame, contours, -1, (0, 255, 255), 1)  # Yellow contours for visibility
-        print(detected_x_positions)
+        
 
         if len(detected_x_positions) == 4:
-            print(detected_x_positions)
+            print(f"corners: {detected_x_positions}")
             return detected_x_positions
         else:
             return self.default_corners

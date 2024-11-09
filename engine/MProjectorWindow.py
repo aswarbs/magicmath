@@ -4,19 +4,30 @@ import time
 import numpy as np
 import cv2
 from computer_vision.detect_corners import CameraCalibrator
+from engine.MXLabel import MXLabel
+import ctypes.wintypes
 
-class CalibrationScreen:
+class ProjectorWindow():
+    def __init__(self):
+        self.master = tk.Tk()
+        self.master.title("Mathquest")
+        self.screen_width = 800
+        self.screen_height = 600
+        self.entities = []
 
-    def __init__(self, parent, master):
-        self.parent = parent
-        self.master = master
+        # Set window size to 640x480 (4:3 ratio)
+        #self.master.geometry("640x480")
+        
+        self.canvas = tk.Canvas(self.master, bg="white", width=self.screen_width, height=self.screen_height)
+        self.canvas.pack(fill="both", expand=True)
 
         self.screen_corners = [
             (0, 0),  # Top-left corner
-            (0, 0),  # Top-right corner (to be updated later)
-            (0, 0),  # Bottom-left corner (to be updated later)
-            (0, 0)   # Bottom-right corner (to be updated later)
+            (self.screen_width, 0),  # Top-right corner
+            (0, self.screen_height),  # Bottom-left corner
+            (self.screen_width, self.screen_height)  # Bottom-right corner
         ]
+
         self.image_corners = [
             (0, 0),  # Top-left corner
             (0, 0),  # Top-right corner (to be updated later)
@@ -28,11 +39,10 @@ class CalibrationScreen:
         # Set background to white
         self.master.configure(bg="white")
 
-        # Display the X labels
-        #self.display_content()
+        self.setup()
 
-        # Reposition the labels on window resize or display
-        self.master.bind("<Configure>", self.update_corner_labels)
+        # Display the X labels
+        self.display_content()
 
         # Initialize CameraCalibrator and fetch corners
         self.camera_calibrator = CameraCalibrator(camera_index=1)
@@ -52,21 +62,55 @@ class CalibrationScreen:
         self.completion_thread = threading.Thread(target=self.complete_formula, daemon=True)
         self.completion_thread.start()
 
+    # Get monitor information
+    def get_monitors_info(self):
+        user32 = ctypes.windll.user32
+        def _get_monitors_resolution():
+            monitors = []
+            monitor_enum_proc = ctypes.WINFUNCTYPE(
+                ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(ctypes.wintypes.RECT), ctypes.c_double)
+            def callback(hMonitor, hdcMonitor, lprcMonitor, dwData):
+                monitors.append((lprcMonitor.contents.left, lprcMonitor.contents.top,
+                                lprcMonitor.contents.right - lprcMonitor.contents.left,
+                                lprcMonitor.contents.bottom - lprcMonitor.contents.top))
+                return 1
+            user32.EnumDisplayMonitors(None, None, monitor_enum_proc(callback), 0)
+            return monitors
+        monitors = _get_monitors_resolution()
+        return monitors
+
+    def setup(self):
+        monitors = self.get_monitors_info()
+        if len(monitors) >= 2:
+            x1, y1, w1, h1 = monitors[1]
+            self.master.geometry("%dx%d+%d+%d" % (w1, h1, x1, y1))
+            self.master.overrideredirect(1)
+        else:
+            w1, h1 = monitors[0][2], monitors[0][3]
+            self.master.geometry("%dx%d+0+0" % (w1, h1))
+            self.master.overrideredirect(1)
+
+        
+
+
+
     def display_content(self):
         # Red X font and color
-        x_font = ("Arial", 36, "bold")
-        x_color = "#32FD32"
+
 
         # Create labels for each corner
-        self.label_tl = tk.Label(self.parent, text="X", font=x_font, fg=x_color, bg="white")
-        self.label_tr = tk.Label(self.parent, text="X", font=x_font, fg=x_color, bg="white")
-        self.label_bl = tk.Label(self.parent, text="X", font=x_font, fg=x_color, bg="white")
-        self.label_br = tk.Label(self.parent, text="X", font=x_font, fg=x_color, bg="white")
+        #self.label_tl = tk.Label(self.canvas, text="X", font=x_font, fg=x_color, bg="white")
+        # Offset value (change this value to move labels farther or closer)
+        offset = 20
 
-        self.label_tl.place(x=self.screen_corners[0][0], y=self.screen_corners[0][1], anchor="nw")
-
-        # Trigger positioning for other corners
-        self.update_corner_labels()
+        # Create labels with offset from each corner
+        self.label_tl = MXLabel(self.canvas, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
+        self.label_tr = MXLabel(self.canvas, self.screen_corners[1][0] - offset, self.screen_corners[1][1] + offset)
+        self.label_bl = MXLabel(self.canvas, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
+        self.label_br = MXLabel(self.canvas, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
+        self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
+        
+        #self.master.update_idletasks()
 
     def complete_formula(self):
         while 1:
@@ -74,26 +118,13 @@ class CalibrationScreen:
             print(f"formula: {formula}")
             time.sleep(1)
     
-    def update_corner_labels(self, event=None):
-        # Update the screen corners after window resize
-        self.screen_corners = [
-            (0, 0),  # Top-left corner
-            (self.master.winfo_width(), 0),  # Top-right corner
-            (0, self.master.winfo_height()),  # Bottom-left corner
-            (self.master.winfo_width(), self.master.winfo_height())  # Bottom-right corner
-        ]
-
-        # Place labels at each corner
-        self.label_tr.place(x=self.screen_corners[1][0], y=self.screen_corners[1][1], anchor="ne")
-        self.label_bl.place(x=self.screen_corners[2][0], y=self.screen_corners[2][1], anchor="sw")
-        self.label_br.place(x=self.screen_corners[3][0], y=self.screen_corners[3][1], anchor="se")
 
 
     def draw_center(self):
         # to test projection
         # draw to the center of the tkinter canvas using only camera corners
         x_font = ("Arial", 36, "bold")
-        self.center_label = tk.Label(self.parent, text="X", fg="red", bg="white", font=x_font)
+        self.center_label = tk.Label(self.canvas, text="X", fg="red", bg="white", font=x_font)
 
         while True:
             time.sleep(1)
@@ -121,6 +152,16 @@ class CalibrationScreen:
             self.center_label.place(x=center_screen[0], y=center_screen[1], anchor=tk.CENTER)
 
 
+
+        
+
+    def mainloop(self):
+        # Run the main event loop
+        _ = [e.draw(self.canvas) for e in self.entities]
+        _ = [e.think() for e in self.entities]
+        self.master.update()
+
+    
     def fetch_corners(self):
         while True:
             # Capture a single frame to detect corners
@@ -147,9 +188,9 @@ class CalibrationScreen:
         # Define the screen corners (top-left, top-right, bottom-left, bottom-right)
         screen_corners = [
             (0, 0),  # Top-left corner
-            (self.master.winfo_width(), 0),  # Top-right corner
-            (0, self.master.winfo_height()),  # Bottom-left corner
-            (self.master.winfo_width(), self.master.winfo_height())  # Bottom-right corner
+            (self.screen_width, 0),  # Top-right corner
+            (0, self.screen_height),  # Bottom-left corner
+            (self.screen_width, self.screen_height)  # Bottom-right corner
         ]
 
         # Convert corners to numpy arrays for OpenCV

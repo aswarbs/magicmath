@@ -26,6 +26,8 @@ class FormulaExtractor:
         Returns:
             list: List of LaTeX formulas extracted from the image.
         """
+        
+
         # Save the original image before processing
         original_image_path = "saved_image.png"  # Path where you want to save the original image
         image.save(original_image_path)

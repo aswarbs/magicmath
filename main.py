@@ -1,8 +1,11 @@
-from gui.screen_setup import MyApp
-import tkinter as tk
+from engine.MProjectorWindow import ProjectorWindow
+import time
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = MyApp(root)
-    app.display_calibration_screen()
-    root.mainloop()
+    # Create and run the app
+    app = ProjectorWindow()
+    
+    while 1:
+
+        app.mainloop()
+        time.sleep(0.1)
