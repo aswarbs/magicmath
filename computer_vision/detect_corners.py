@@ -14,7 +14,7 @@ class CameraCalibrator:
         self.upper_green = np.array([80, 255, 255])  # Upper bound for lime green
         
         # Set minimum and maximum area to filter noise and small contours
-        self.min_area = 20
+        self.min_area = 1
         self.max_area = 5000
 
     def detect_corners(self):
