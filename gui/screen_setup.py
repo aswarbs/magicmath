@@ -3,7 +3,8 @@ import ctypes.wintypes
 import tkinter as tk
 from PIL import Image, ImageTk
 import tkinter.font as tkFont
-from calibration_screen import CalibrationScreen
+from gui.calibration_screen import CalibrationScreen
+
 
 # Get monitor information
 def get_monitors_info():
@@ -51,7 +52,6 @@ class MyApp:
 
     def display_calibration_screen(self):
         calibration_screen = CalibrationScreen(self.master, self.parent_frame)
-        calibration_screen.display_content()
 
     def toggle_fullscreen(self, event=None):
         overrideredirect_value = root.overrideredirect()
@@ -63,8 +63,3 @@ class MyApp:
     def close(self, event=None):
         self.master.destroy()
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = MyApp(root)
-    app.display_calibration_screen()
-    root.mainloop()
