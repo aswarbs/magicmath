@@ -1,47 +1,52 @@
 from pix2text import Pix2Text
 from PIL import Image
 import matplotlib.pyplot as plt
-import re
+import os
 
-# Initialize Pix2Text
-pix2text = Pix2Text()
+class FormulaExtractor:
+    def __init__(self, model=None):
+        """
+        Initializes the formula extractor with a Pix2Text model.
+        If no model is provided, it initializes a new Pix2Text model.
+        """
+        # Initialize Pix2Text model if not passed
+        self.pix2text = model if model else Pix2Text()
 
-# Load the handwritten formula image
-image_path = 'test_images/test_lambda.png'
-image = Image.open(image_path)
+        # Ensure output directory exists
+        if not os.path.exists('output'):
+            os.makedirs('output')
 
-# Convert the image to grayscale
-image = image.convert("L")
-
-# Run OCR on the enhanced image
-ocr_text = pix2text(image)
-
-# Process and print the output
-print("Extracted Page:", ocr_text)
-texts = [o.text for o in ocr_text.elements]
-print(texts)
-
-# Print each formula found and save as an image
-print("Detected Formulas:")
-for i, clean_t in enumerate(texts, 1):
-    if not clean_t:  # Skip empty formulas
-        print(f"Formula {i}: (empty or invalid)")
-        continue
-
-    # Display the formula text
-    print(f"Formula {i}: {clean_t}")
-
-    try:
-        # Plot the formula using LaTeX formatting and save it as an image
-        fig, ax = plt.subplots()
-        ax.text(0.5, 0.5, f"${clean_t}$", fontsize=20, ha='center', va='center', usetex=True)
-        ax.axis('off')  # Hide axes
-
-        # Save each formula as an image file
-        fig.savefig(f'output/formula_{i}.png', bbox_inches='tight', pad_inches=0.1)
-        plt.close(fig)
+    def extract_latex_from_image(self, image):
+        """
+        Extracts LaTeX formulas from a handwritten image and saves them as images.
         
-        print(f"Formula {i} saved as 'formula_{i}.png'")
+        Args:
+            image (str): Path to the image containing handwritten formulas.
+        
+        Returns:
+            list: List of LaTeX formulas extracted from the image.
+        """
+        # Save the original image before processing
+        original_image_path = "saved_image.png"  # Path where you want to save the original image
+        image.save(original_image_path)
 
-    except Exception as e:
-        print(f"Error rendering formula {i}: {e}")
+        # Convert the image to grayscale for OCR
+        image = image.convert("L")
+
+        # Run OCR on the image using Pix2Text
+        ocr_text = self.pix2text(image)
+
+        # Extract and process OCR output
+        texts = [o.text for o in ocr_text.elements if o.text.strip()]
+        detected_formulas = []
+
+        # Process each detected formula and save as an image
+        for i, formula in enumerate(texts, 1):
+            # Skip if the detected formula is empty
+            if not formula:
+                continue
+
+            # Display the formula in the terminal
+            print(f"Formula {i}: {formula}")
+        
+        return detected_formulas

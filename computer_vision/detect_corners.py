@@ -1,34 +1,86 @@
+import threading
 import cv2
 import numpy as np
+import time
+from PIL import Image
+from computer_vision.image_to_latex import FormulaExtractor
 
 class CameraCalibrator:
     def __init__(self, camera_index=0):
         
-        self.default_corners = [(75, 319), (506, 317), (485, 43), (94, 37)]
+        self.default_corners = [(116, 318), (545, 315), (130, 42), (520, 40)]
+        self.frame = None
 
         # Initialize camera
         self.cap = cv2.VideoCapture(camera_index)
         
         # Define lower and upper bounds for lime green in HSV
-        self.lower_green = np.array([40, 100, 100])  # Lower bound for lime green
-        self.upper_green = np.array([80, 255, 255])  # Upper bound for lime green
+        self.lower_green = np.array([40, 80, 80])  # Lower bound for lime green
+        self.upper_green = np.array([85, 255, 255])  # Upper bound for lime green
         
         # Set minimum and maximum area to filter noise and small contours
         self.min_area = 1
         self.max_area = 5000
+        self.pix2text = FormulaExtractor()
 
+        run_thread = threading.Thread(target=self.mainloop)
+        run_thread.start()
+
+    def mainloop(self):
+        while 1:
+            # Capture a single frame from the camera
+            ret, self.frame = self.cap.read()
+            if not ret:
+                print("Failed to grab frame")
+                return []
+            # Display the frame with detections (optional)
+            cv2.imshow("", self.frame)
+            cv2.waitKey(1)
+            time.sleep(0.1)
+
+    def get_formula(self, region):
+        """
+        Crop the image to the specified region and extract LaTeX formula from it.
+
+        Args:
+            region (tuple): A tuple of (x1, y1, x2, y2) specifying the top-left and bottom-right
+                            coordinates of the region to crop.
+
+        Returns:
+            str: The LaTeX formula extracted from the region.
+        """
+        if self.frame is None or region is None:
+            return "No frame captured."
+
+        x_coords = [point[0] for point in region]
+        y_coords = [point[1] for point in region]
+        
+        x1, x2 = min(x_coords), max(x_coords)
+        y1, y2 = min(y_coords), max(y_coords)
+
+        cropped_image = self.frame[y1:y2, x1:x2]
+
+        # Convert the cropped image to grayscale (if needed for OCR)
+        cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+        
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        cropped_image = clahe.apply(cropped_image)
+
+        # Convert the cropped image to a PIL image for OCR processing
+        pil_image = Image.fromarray(cropped_image)
+
+        # Run OCR (Pix2Text or any OCR method) to extract LaTeX
+        return self.pix2text.extract_latex_from_image(pil_image)
+
+        
     def detect_corners(self):
-        # Capture a single frame from the camera
-        ret, frame = self.cap.read()
-        if not ret:
-            print("Failed to grab frame")
-            return []
+        if self.frame is None: return
 
         # Convert the frame to HSV color space for better color detection
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
 
         # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization) to enhance contrast
-        lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+        lab = cv2.cvtColor(self.frame, cv2.COLOR_BGR2LAB)
         l, a, b = cv2.split(lab)
         clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
         cl = clahe.apply(l)
@@ -62,17 +114,16 @@ class CameraCalibrator:
 
         # Draw all contours on the frame
         cv2.drawContours(enhanced_frame, contours, -1, (0, 255, 255), 1)  # Yellow contours for visibility
-
-        # Display the frame with detections (optional)
-        cv2.imshow("Lime Green Detection", enhanced_frame)
-        cv2.waitKey(1)
+        print(detected_x_positions)
 
         if len(detected_x_positions) == 4:
+            print(detected_x_positions)
             return detected_x_positions
         else:
             return self.default_corners
+        
 
-
+    
     def release_camera(self):
         # Release the camera and close all OpenCV windows
         self.cap.release()
