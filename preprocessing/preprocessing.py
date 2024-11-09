@@ -37,7 +37,7 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Apply binary thresholding to get a black and white image
-    _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(gray, 230, 255, cv2.THRESH_BINARY_INV)
 
     # OPTIONAL: Clean up noise using morphological operations (e.g., closing)
     kernel = np.ones((5, 5), np.uint8)
@@ -50,12 +50,13 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
     whiteboard = cv2.bitwise_and(img, img, mask=cv2.bitwise_not(dilated_text))  # White background
     text = cv2.bitwise_and(img, img, mask=dilated_text)  # Thicker black text
 
-    # Convert BGR images to RGB for displaying using matplotlib
+    # Convert BGR images to RGB for displaying using matplotlibs
     whiteboard_rgb = cv2.cvtColor(whiteboard, cv2.COLOR_BGR2RGB)
     text_rgb = cv2.cvtColor(text, cv2.COLOR_BGR2RGB)
 
     # Overlay the thicker text on the original image
-    overlay_img = cv2.addWeighted(img, 0.7, text, -0.5, 0)
+    overlay_img = img
+    overlay_img = cv2.addWeighted(img, 0.7, text, -0.4, 0)
 
     # Convert the overlay image to RGB for displaying
     overlay_img_rgb = cv2.cvtColor(overlay_img, cv2.COLOR_BGR2RGB)
@@ -78,7 +79,7 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
 
     plt.subplot(1, 3, 3)
     plt.title("Overlay Text on Original Image")
-    plt.imshow(overlay_img_rgb)
+    plt.imshow(overlay_img)
     plt.axis("off")
 
     plt.show()
@@ -238,6 +239,7 @@ def show_extracted_equations(equation_images):
     plt.show()
 
 
+process_whiteboard_image("frame_0.jpg", "output_image_with_text.jpg")
 
 # Example usage
 image_path = "output_image_with_text.jpg"  # Replace with your image path
@@ -252,9 +254,68 @@ show_extracted_equations(equation_images)
 # Initialize the formula extractor
 p = py2tex.FormulaExtractor()
 
+# Example values for the total area (adjust based on your canvas or reference size)
+# Open the image
+pil_image = Image.open(image_path)
+
+# Get the image dimensions (width, height)
+image_width, image_height = pil_image.size
+
+# Calculate the total area (width * height)
+total_area = image_width * image_height
+
+
+# Function to check if an image is over a certain percentage of dark pixels
+def over_n_black(image, n=80, threshold=50):
+    """
+    Checks if more than 'n' percent of the pixels in the image are considered dark (below the 'threshold').
+
+    :param image: The PIL image to analyze.
+    :param n: The percentage of dark pixels required (default 80%).
+    :param threshold: The pixel value below which a pixel is considered dark (default 50).
+    :return: True if more than 'n' percent of the pixels are dark, otherwise False.
+    """
+    # Convert the image to grayscale
+    gray_image = image.convert('L')  # Convert to grayscale (L mode)
+
+    # Convert the grayscale image to a numpy array
+    img_array = np.array(gray_image)
+
+    # Count dark pixels (pixels below the threshold)
+    dark_pixels = np.sum(img_array < threshold)
+
+    # Calculate total number of pixels
+    total_pixels = img_array.size
+
+    # Calculate the percentage of dark pixels
+    dark_percentage = (dark_pixels / total_pixels) * 100
+
+    return dark_percentage > n
+
+
+
 for index, eq in enumerate(equation_images):
     # Convert the OpenCV image (NumPy array) to a PIL image
     pil_image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
+
+    # Get the dimensions of the image
+    image_width, image_height = pil_image.size
+
+    # Calculate the area of the image
+    image_area = image_width * image_height
+
+    # Calculate the percentage of the image area compared to the total area
+    area_percentage = (image_area / total_area) * 100
+
+    # Skip if the image takes up more than 40% of the total area
+    if area_percentage > 40:
+        print(f"Skipping image {index}, as it takes up {area_percentage:.2f}% of the total area.")
+        continue  # Skip this iteration
+
+    # Check if the image is over 80% black and skip if true
+    if over_n_black(pil_image):
+        print(f"Skipping image {index}, as it is over 80% black.")
+        continue  # Skip this iteration
 
     # Extract LaTeX from the PIL image
     try:
