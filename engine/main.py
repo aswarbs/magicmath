@@ -1,4 +1,4 @@
-from Window import *
+from MProjectorWindow import ProjectorWindow
 from MLabel import MLabel
 from MProfile import MProfile
 from GenAI.ProfileGen import gen_profile, Era
