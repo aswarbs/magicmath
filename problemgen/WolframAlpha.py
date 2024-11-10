@@ -1,5 +1,5 @@
 from pprint import pprint
-from Key import WOLFRAM_ALPHA_APPID
+from preprocessing.Key import WOLFRAM_ALPHA_APPID
 import requests
 import urllib.parse
 

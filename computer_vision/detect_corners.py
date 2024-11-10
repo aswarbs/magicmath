@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import time
 from PIL import Image
-from computer_vision.image_to_latex import FormulaExtractor
 
 class CameraCalibrator:
     def __init__(self, camera_index=0):
@@ -21,7 +20,6 @@ class CameraCalibrator:
         # Set minimum and maximum area to filter noise and small contours
         self.min_area = 5
         self.max_area = 5000
-        self.pix2text = FormulaExtractor()
 
         run_thread = threading.Thread(target=self.mainloop)
         run_thread.start()
@@ -69,9 +67,6 @@ class CameraCalibrator:
 
         # Convert the cropped image to a PIL image for OCR processing
         pil_image = Image.fromarray(cropped_image)
-
-        # Run OCR (Pix2Text or any OCR method) to extract LaTeX
-        return self.pix2text.extract_latex_from_image(pil_image)
 
         
     def detect_corners(self):

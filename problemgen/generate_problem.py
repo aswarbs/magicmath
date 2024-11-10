@@ -1,8 +1,8 @@
 
 from openai import OpenAI
-from Key import OPENAI_API_KEY
+from preprocessing.Key import OPENAI_API_KEY
 from sympy import symbols, Eq, solve, sympify
-from WolframAlpha import *
+from problemgen.WolframAlpha import *
 import re
 
 client = OpenAI(api_key=OPENAI_API_KEY)

@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import py2tex
 from PIL import Image
-from openaiapi import *
+from preprocessing.openaiapi import *
 
 # Function to adjust brightness and contrast of the image
 def adjust_brightness_contrast(img, brightness=50, contrast=30):
@@ -26,18 +25,17 @@ def adjust_brightness_contrast(img, brightness=50, contrast=30):
 
 
 # Function to process the image and separate black (text) and white (background)
-def process_whiteboard_image(image_path, output_path="output_image.jpg"):
+def process_whiteboard_image(img, output_path="output_image.jpg"):
     # Read the image
-    img = cv2.imread(image_path)
 
     # Increase brightness and contrast before further processing
-    img = adjust_brightness_contrast(img, brightness=50, contrast=50)
+    img = adjust_brightness_contrast(img, brightness=70, contrast=50)
 
     # Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Apply binary thresholding to get a black and white image
-    _, binary = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(img, 250, 255, cv2.THRESH_BINARY_INV)
 
     # OPTIONAL: Clean up noise using morphological operations (e.g., closing)
     kernel = np.ones((3, 3), np.uint8)
@@ -64,7 +62,7 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
     # Save the overlay image as a file
     cv2.imwrite(output_path, overlay_img)
 
-    # Plotting the images
+    """# Plotting the images
     plt.figure(figsize=(12, 6))
 
     plt.subplot(1, 3, 1)
@@ -82,36 +80,37 @@ def process_whiteboard_image(image_path, output_path="output_image.jpg"):
     plt.imshow(overlay_img)
     plt.axis("off")
 
-    plt.show()
+    plt.show()"""
+
+    return overlay_img
 
 
 
-def preprocess_image(image_path):
+def preprocess_image(image):
     """
     Preprocess the image by converting it to grayscale and applying adaptive thresholding.
     Additionally, remove black borders around the whiteboard to focus on the equations.
     """
-    # Read the image
-    img = cv2.imread(image_path)
-
     # Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Display the grayscale image to check the contrast before thresholding
-    plt.imshow(gray, cmap='gray')
+    """plt.imshow(image, cmap='gray')
     plt.title("Grayscale Image")
     plt.axis("off")
-    plt.show()
+    plt.show()"""
 
     # Apply adaptive thresholding to get a black and white image
-    binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+    binary = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
                                    cv2.THRESH_BINARY_INV, 11, 2)
+    
+    cv2.imwrite("adaptive_threshold.png", binary)
 
     # Display the binary image to inspect the result
-    plt.imshow(binary, cmap='gray')
+    """plt.imshow(binary, cmap='gray')
     plt.title("Binary Image (Adaptive Thresholding)")
     plt.axis("off")
-    plt.show()
+    plt.show()"""
 
     # Find contours to detect the black border (assuming it is the largest contour)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -126,19 +125,19 @@ def preprocess_image(image_path):
     # img_cropped = img[y:y + h, x:x + w]
     # binary_cropped = binary[y:y + h, x:x + w]
 
-    return img, binary, img, binary
+    return image, binary, image, binary
 
 
 
 
-def extract_equation_groups(image_path):
+def extract_equation_groups(image):
     """
     This function takes the image path of black equations on a white whiteboard,
     removes the black border, and breaks the image into individual equation groups.
     It returns the cropped equations along with their full bounding boxes.
     """
     # Preprocess the image to remove the black border
-    img_cropped, binary_cropped, img, binary = preprocess_image(image_path)
+    img_cropped, binary_cropped, img, binary = preprocess_image(image)
 
     # Apply dilation to join nearby contours
     kernel = np.ones((20, 20), np.uint8)  # Adjust the kernel size as needed
@@ -203,7 +202,8 @@ def show_preprocessed_image(img, binary, img_cropped, binary_cropped):
     Show the original image, the binary threshold image, and the cropped version after
     removing the black border.
     """
-    plt.figure(figsize=(12, 6))
+    pass
+    """plt.figure(figsize=(12, 6))
 
     # Show the original image
     plt.subplot(2, 2, 1)
@@ -230,7 +230,7 @@ def show_preprocessed_image(img, binary, img_cropped, binary_cropped):
     plt.axis("off")
 
     plt.tight_layout()
-    plt.show()
+    plt.show()"""
 
 
 def show_extracted_equations(equation_images):
@@ -241,7 +241,7 @@ def show_extracted_equations(equation_images):
         print("No equations were extracted.")
         return
 
-    plt.figure(figsize=(12, 6))
+    """plt.figure(figsize=(12, 6))
     for i, equation in enumerate(equation_images):
         # Check if the equation is a valid image (not empty)
         if equation is not None and isinstance(equation, np.ndarray) and equation.size > 0:
@@ -251,7 +251,7 @@ def show_extracted_equations(equation_images):
             plt.title(f"Equation {i + 1}")
         else:
             print(f"Invalid or empty image at index {i}")
-    plt.show()
+    plt.show()"""
 
 
 # Function to check if an image is over a certain percentage of dark pixels
@@ -282,44 +282,37 @@ def over_n_black(image, n=80, threshold=30):
     return dark_percentage > n
 
 
-def process_equations(image_path = "goodimg.jpg"):
+def process_equations(image):
+    image = process_whiteboard_image(image, "output_image_with_text.jpg")
 
-    process_whiteboard_image(image_path, "output_image_with_text.jpg")
-
-    # Example usage
-    image_path = "output_image_with_text.jpg"  # Replace with your image path
-    equation_groups, img_cropped, binary_cropped = extract_equation_groups(image_path)
+    equation_groups, img_cropped, binary_cropped = extract_equation_groups(image)
     equation_images = [e["equation"] for e in equation_groups]
 
     # Show the preprocessed images
-    show_preprocessed_image(img_cropped, binary_cropped, img_cropped, binary_cropped)
+    #show_preprocessed_image(img_cropped, binary_cropped, img_cropped, binary_cropped)
 
     # Show the extracted equations (after preprocessing)
     show_extracted_equations(equation_images)
 
-    # Initialize the formula extractor
-    p = py2tex.FormulaExtractor()
-
-    # Example values for the total area (adjust based on your canvas or reference size)
-    # Open the image
-    pil_image = Image.open(image_path)
-
     # Get the image dimensions (width, height)
-    image_width, image_height = pil_image.size
+    image_height, image_width = image.shape[:2]
 
     # Calculate the total area (width * height)
     total_area = image_width * image_height
 
     print(f"There are {len(equation_images)} equations in total.")
+
+    equations_with_positions = []
+
     for index, eq in enumerate(equation_images):
         # Convert the OpenCV image (NumPy array) to a PIL image
-        pil_image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
+        image = Image.fromarray(cv2.cvtColor(eq, cv2.COLOR_BGR2RGB))
 
         # Get the dimensions of the image
-        image_width, image_height = pil_image.size
+        eq_width, eq_height = image.size
 
         # Calculate the area of the image
-        image_area = image_width * image_height
+        image_area = eq_width * eq_height
 
         # Calculate the percentage of the image area compared to the total area
         area_percentage = (image_area / total_area) * 100
@@ -330,31 +323,45 @@ def process_equations(image_path = "goodimg.jpg"):
             continue  # Skip this iteration
 
         # Check if the image is over 80% black and skip if true
-        if over_n_black(pil_image):
+        if over_n_black(image):
             print(f"Skipping image {index}, as it is over 80% black.")
             continue  # Skip this iteration
 
         # Extract LaTeX from the PIL image
         try:
-
-            pil_image.save(f"eq_{index}.jpg", format="JPEG")
+            image.save(f"eq_{index}.jpg", format="JPEG")
             latex_string = get_latex_from_image_path(f"eq_{index}.jpg")
             print(f"Latex String obtained :: {latex_string}")
+            
+            # Get the position of the equation in the cropped image
+            # Assuming the equation group has the "position" data which provides the (x, y) top-left position
+            eq_position = equation_groups[index].get("position", (0, 0))
+            eq_x, eq_y = eq_position
+
+            # Calculate center-right position relative to the entire image
+            center_right_x = eq_x + eq_width - 1  # Right edge of the equation in the whole image
+            center_right_y = eq_y + (eq_height // 2)  # Vertical center of the equation in the whole image
+
+            # Append the equation and its position
+            equations_with_positions.append((latex_string, (center_right_x, center_right_y)))
 
         except Exception as e:
             latex_string = "Extraction failed"
             print(e)
 
         # Create a figure for each equation
-        plt.figure(figsize=(6, 4))
-        plt.imshow(pil_image)
+        """plt.figure(figsize=(6, 4))
+        plt.imshow(image)
         plt.axis('off')
         plt.title(f"Equation {index}")
         plt.text(0.5, -0.1, latex_string, ha='center', va='top', wrap=True, transform=plt.gca().transAxes)
 
         # Save each plot as an image file
         plt.savefig(f"equation_{index}.png", bbox_inches='tight')
-        plt.close()
+        plt.close()"""
+
+    return equations_with_positions
+
 
 
 if __name__ == "__main__":

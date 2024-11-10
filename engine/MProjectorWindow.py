@@ -7,6 +7,8 @@ from computer_vision.detect_corners import CameraCalibrator
 from engine.MXLabel import MXLabel
 import ctypes.wintypes
 from PIL import Image
+from preprocessing.preprocessing import process_equations
+from problemgen.generate_problem import program_answer, get_answer
 
 class ProjectorWindow():
     def __init__(self):
@@ -60,12 +62,10 @@ class ProjectorWindow():
         self.draw_thread = threading.Thread(target=self.draw_center, daemon=True)
         self.draw_thread.start()
 
-        self.completion_thread = threading.Thread(target=self.complete_formula, daemon=True)
-        self.completion_thread.start()
-
     
 
     def save_tkinter_background(self):
+
         # Save the Tkinter canvas content to a PostScript file
         self.canvas.postscript(file="projection.ps", colormode='color')
 
@@ -74,8 +74,7 @@ class ProjectorWindow():
         img = img.resize((640,480))
 
         img.save("projection.png", "png")
-        print("Tkinter window saved as 'projection.png'")
-
+        
     def save_foreground_mask(self):
         """
         Isolate and save the mask of new drawings on the whiteboard using warpPerspective.
@@ -88,7 +87,6 @@ class ProjectorWindow():
 
         # Ensure corners have been set up and frame is captured
         if corners is None or frame is None:
-            print(f"frame: {frame} corners: {corners}")
             return None
 
         # Read the background image in grayscale (projection-only baseline)
@@ -96,8 +94,6 @@ class ProjectorWindow():
 
         # Convert the current frame to grayscale
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        print(f"screen corners: {self.screen_corners}. real corners: {corners}")
 
         # Convert the real-world corners and screen corners to numpy arrays
         real_points = np.array(corners, dtype=np.float32).reshape(-1, 1, 2)
@@ -133,8 +129,6 @@ class ProjectorWindow():
 
         # Save the overlay image
         cv2.imwrite('overlay.png', overlay)
-        print("Overlay saved as 'overlay.png'.")
-
         return foreground_mask  # Return the foreground mask for further processing
 
     # Get monitor information
@@ -190,24 +184,15 @@ class ProjectorWindow():
         
         #self.master.update_idletasks()
 
-    def complete_formula(self):
-        while 1:
-            formula = self.camera_calibrator.get_formula(self.corners)
-            print(f"formula: {formula}")
-            time.sleep(1)
-    
 
     def flush(self):
         pass
 
     def draw_center(self):
-        # to test projection
-        # draw to the center of the tkinter canvas using only camera corners
-
-
 
         while True:
             time.sleep(1)
+
 
             if not self.corners:
                 continue
@@ -232,19 +217,43 @@ class ProjectorWindow():
             self.center_label.x = center_screen[0]
             self.center_label.y = center_screen[1]
 
+            
+            mask = self.save_foreground_mask()
+            if mask is not None:
+                equations_with_positions = process_equations(mask)
+                if equations_with_positions is not None:
+                    answers = []
+                    for e in equations_with_positions:
+                        answer = None
+                        try:
+                            answer = program_answer(e[0])
+                        except:
+                            try:
+                                answer = get_answer(e[0])
+                            except:
+                                pass
+                        answers.append(answer)
+                        
+                        if answer is not None:
+                            # draw the answer to the right of the question
+                            answer_position = (e[1][0], e[1][1])
+                            answer_position = (answer_position[0] + 10, answer_position[1])
+                            print(f"answer position: {answer_position}")
+                            answer_label = MXLabel(self.canvas, *answer_position, text=answer, color="red")
+                            self.entities.append(answer_label)
 
-
-        
+                    print(f"equations: {[e for e in equations_with_positions]}\nanswers: {answers}") 
 
     def mainloop(self):
         # Run the main event loop
+        #print(f"Entities: {self.entities}")
         _ = [e.draw(self.canvas) for e in self.entities]
         _ = [e.think() for e in self.entities]
         self.save_tkinter_background()
-        self.save_foreground_mask()
+
+                        
         self.master.update()
 
-    
     def fetch_corners(self):
         while True:
             # Capture a single frame to detect corners
@@ -281,7 +290,5 @@ class ProjectorWindow():
 
         # Ensure the point is within the bounds of the screen
         screen_x, screen_y = screen_point[0][0]
-
-        #print(f"real point: {real_point} screen point: ({screen_x}, {screen_y})")
 
         return (screen_x, screen_y)
