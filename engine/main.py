@@ -1,12 +1,13 @@
-from Window import *
-from MDoorLevel import MDoor
+from MProjectorWindow import ProjectorWindow
 from MLabel import MLabel
-from MMainMenu import MMainMenu
+from MProfile import MProfile
+from GenAI.ProfileGen import gen_profile, Era
+from MTexLabel import MTexLabel
 
 if __name__ == "__main__":
     # Create and run the app
     app = GameWindow()
-    lab = MMainMenu(app)
-
-    app.entities.append(lab)
+    pubert = MProfile(app.master, gen_profile(Era.INFORMATION))
+    app.entities.append(pubert)
+    pubert.speak("wefmoewmfkmefo")
     app.mainloop()
