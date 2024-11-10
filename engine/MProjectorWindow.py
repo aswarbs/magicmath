@@ -65,15 +65,19 @@ class ProjectorWindow():
     
 
     def save_tkinter_background(self):
+        try:
 
-        # Save the Tkinter canvas content to a PostScript file
-        self.canvas.postscript(file="projection.ps", colormode='color')
+            # Save the Tkinter canvas content to a PostScript file
+            self.canvas.postscript(file="projection.ps", colormode='color')
 
-        # Open the PostScript file, convert it to PNG format, and save
-        img = Image.open("projection.ps")
-        img = img.resize((640,480))
+            # Open the PostScript file, convert it to PNG format, and save
+            img = Image.open("projection.ps")
+            img = img.resize((640,480))
 
-        img.save("projection.png", "png")
+            with self.lock:
+                img.save("projection.png", "png")
+        except:
+            pass
         
     def save_foreground_mask(self):
         """
@@ -90,8 +94,9 @@ class ProjectorWindow():
             return None
 
         try:
-            # Read the background image in grayscale (projection-only baseline)
-            background = cv2.imread('projection.png', cv2.IMREAD_GRAYSCALE)
+            with self.lock:
+                # Read the background image in grayscale (projection-only baseline)
+                background = cv2.imread('projection.png', cv2.IMREAD_GRAYSCALE)
 
             # Convert the current frame to grayscale
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -176,13 +181,13 @@ class ProjectorWindow():
         offset = 0
 
         # Create labels with offset from each corner
-        self.label_tl = MXLabel(self.canvas, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
-        self.label_tr = MXLabel(self.canvas, self.screen_corners[1][0] - offset, self.screen_corners[1][1] + offset)
-        self.label_bl = MXLabel(self.canvas, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
-        self.label_br = MXLabel(self.canvas, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
+        self.label_tl = MXLabel(self, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
+        self.label_tr = MXLabel(self, self.screen_corners[1][0] - offset, self.screen_corners[1][1] + offset)
+        self.label_bl = MXLabel(self, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
+        self.label_br = MXLabel(self, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
         self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
 
-        self.center_label = MXLabel(self.canvas, -10, -10, colour="red")
+        self.center_label = MXLabel(self, -10, -10, colour="red")
         self.entities.append(self.center_label)
         
         #self.master.update_idletasks()
@@ -225,6 +230,11 @@ class ProjectorWindow():
 
             if mask is not None:
                 equations_with_positions = process_equations(mask)
+                
+                # remove existing label (this limits the maximum number of labels to 1 unfortunately)
+                for _e in self.entities:
+                    if _e.tag == "ANSWER":
+                        _e.delete()
                 if equations_with_positions is not None:
                     answers = []
                     for e in equations_with_positions:
@@ -239,11 +249,14 @@ class ProjectorWindow():
                         answers.append(answer)
                         
                         if answer is not None:
+
                             # draw the answer to the right of the question
                             answer_position = (e[1][0], e[1][1])
                             answer_position = (answer_position[0] + 10, answer_position[1])
                             print(f"answer position: {answer_position}")
-                            answer_label = MXLabel(self.canvas, *answer_position, text=answer, colour="red")
+                            answer_label = MXLabel(self, *answer_position, text=answer, colour="red")
+                            answer_label.tag = "ANSWER"
+
                             self.entities.append(answer_label)
 
                     print(f"equations: {[e for e in equations_with_positions]}\nanswers: {answers}") 

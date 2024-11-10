@@ -5,7 +5,7 @@ from PIL import Image
 from preprocessing.openaiapi import *
 
 # Function to adjust brightness and contrast of the image
-def adjust_brightness_contrast(img, brightness=50, contrast=30):
+def adjust_brightness_contrast(img, brightness=0, contrast=0):
     # Adjusting brightness and contrast
     # We use the formula: new_pixel = alpha * (pixel - 128) + 128 + beta
     # Where 'alpha' is a scaling factor (contrast) and 'beta' is the brightness offset
@@ -29,16 +29,17 @@ def process_whiteboard_image(img, output_path="output_image.jpg"):
     # Read the image
 
     # Increase brightness and contrast before further processing
-    img = adjust_brightness_contrast(img, brightness=70, contrast=50)
+    img = adjust_brightness_contrast(img, brightness=30, contrast=60)
+    cv2.imwrite("bright_image.png", img)
 
     # Convert to grayscale
     #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Apply binary thresholding to get a black and white image
-    _, binary = cv2.threshold(img, 250, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(img, 230, 255, cv2.THRESH_BINARY_INV)
 
     # OPTIONAL: Clean up noise using morphological operations (e.g., closing)
-    kernel = np.ones((3, 3), np.uint8)
+    kernel = np.ones((1, 1), np.uint8)
     cleaned = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
 
     # Apply dilation to thicken the text
@@ -94,15 +95,16 @@ def preprocess_image(image):
     # Convert to grayscale
     #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Display the grayscale image to check the contrast before thresholding
+    # Display the grayscale fimage to check the contrast before thresholding
     """plt.imshow(image, cmap='gray')
     plt.title("Grayscale Image")
     plt.axis("off")
     plt.show()"""
 
+
     # Apply adaptive thresholding to get a black and white image
     binary = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                   cv2.THRESH_BINARY_INV, 11, 2)
+                                cv2.THRESH_BINARY, 15, -5)
     
     cv2.imwrite("adaptive_threshold.png", binary)
 
@@ -138,6 +140,9 @@ def extract_equation_groups(image):
     """
     # Preprocess the image to remove the black border
     img_cropped, binary_cropped, img, binary = preprocess_image(image)
+    #binary_cropped = cv2.bitwise_not(binary_cropped)  # White background
+
+    cv2.imwrite("img_cropped.png", binary_cropped)
 
     # Apply dilation to join nearby contours
     kernel = np.ones((20, 20), np.uint8)  # Adjust the kernel size as needed
@@ -183,7 +188,7 @@ def extract_equation_groups(image):
             text_percentage = (text_pixels / total_pixels) * 100
 
             # Only add the original crop to the list if the text percentage is above 10%
-            if text_percentage >= 5:
+            if text_percentage >= 2:
                 # Append the equation crop along with its full bounding box (x, y, w, h)
                 equation_groups.append({
                     'equation': cropped_equation,  # Cropped equation image
@@ -287,6 +292,8 @@ def process_equations(image):
 
     equation_groups, img_cropped, binary_cropped = extract_equation_groups(image)
     equation_images = [e["equation"] for e in equation_groups]
+    equation_boxes = [e['bounding_box'] for e in equation_groups]
+    print(f"equation groups: {equation_groups}")
 
     # Show the preprocessed images
     #show_preprocessed_image(img_cropped, binary_cropped, img_cropped, binary_cropped)
@@ -335,12 +342,13 @@ def process_equations(image):
             
             # Get the position of the equation in the cropped image
             # Assuming the equation group has the "position" data which provides the (x, y) top-left position
-            eq_position = equation_groups[index].get("position", (0, 0))
-            eq_x, eq_y = eq_position
+            #eq_position = equation_groups[index].get("position", (0, 0))
+            #eq_x, eq_y = eq_position
 
-            # Calculate center-right position relative to the entire image
-            center_right_x = eq_x + eq_width - 1  # Right edge of the equation in the whole image
-            center_right_y = eq_y + (eq_height // 2)  # Vertical center of the equation in the whole image
+            (x1, y1, w, h) = equation_groups[index].get("bounding_box")
+
+            center_right_x = x1 + w + 15
+            center_right_y = y1 + (h // 2)
 
             # Append the equation and its position
             equations_with_positions.append((latex_string, (center_right_x, center_right_y)))
