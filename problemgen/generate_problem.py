@@ -24,6 +24,8 @@ def generate_equation_rearrangement():
     )
     return response.choices[0].message.content
 
+
+
 def get_answer(problem):
   response = client.chat.completions.create(
     model="gpt-4o",
@@ -38,6 +40,25 @@ def get_answer(problem):
     top_p=1
   )
   content = response.choices[0].message.content
+
+
+
+def get_explanation(problem, answer):
+  response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+      {
+        "role": "user",
+        "content": f"Explain in 1 simple sentence how this problem {problem} has this answer {answer}. Explain in simple english, do NOT use latex"
+      },
+    ],
+    temperature=0.7,
+    max_tokens=64,
+    top_p=1
+  )
+  content = response.choices[0].message.content
+  return content
+
 
 def program_answer(problem):
   response = client.chat.completions.create(
@@ -63,13 +84,17 @@ def program_answer(problem):
   return locals().get('result', None)
 
 
-if __name__ == '__main__':
-  a = generate_equation_rearrangement()
-  print(a)
-  _a = a.replace("\\[", "")
-  b = program_answer("Solve for x " + _a)
-  print(b)
 
-  c = program_answer("\\[\\sum_{i=0}^{n} n^2\\]")
+if __name__ == '__main__':
+  #a = generate_equation_rearrangement()
+  #print(a)
+  #_a = a.replace("\\[", "")
+  #b = program_answer("Solve for x " + _a)
+  #print(b)
+
+  c = program_answer("((\lambda x.x)(1))")
   print(c)
+
+  e = get_explanation("((\lambda x.x)(1))", c)
+  print(e)
 
