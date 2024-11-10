@@ -22,7 +22,7 @@ class ProjectorWindow():
         #self.master.geometry("640x480")
         
         self.canvas = tk.Canvas(self.master, bg="white", width=self.screen_width, height=self.screen_height)
-        self.canvas.pack(fill="both", expand=True)
+        self.canvas.pack()
 
         self.screen_corners = [
             (0, 0),  # Top-left corner
@@ -89,47 +89,50 @@ class ProjectorWindow():
         if corners is None or frame is None:
             return None
 
-        # Read the background image in grayscale (projection-only baseline)
-        background = cv2.imread('projection.png', cv2.IMREAD_GRAYSCALE)
+        try:
+            # Read the background image in grayscale (projection-only baseline)
+            background = cv2.imread('projection.png', cv2.IMREAD_GRAYSCALE)
 
-        # Convert the current frame to grayscale
-        frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Convert the current frame to grayscale
+            frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Convert the real-world corners and screen corners to numpy arrays
-        real_points = np.array(corners, dtype=np.float32).reshape(-1, 1, 2)
-        screen_points = np.array(self.screen_corners, dtype=np.float32).reshape(-1, 1, 2)
+            # Convert the real-world corners and screen corners to numpy arrays
+            real_points = np.array(corners, dtype=np.float32).reshape(-1, 1, 2)
+            screen_points = np.array(self.screen_corners, dtype=np.float32).reshape(-1, 1, 2)
 
-        # Calculate the homography matrix using OpenCV
-        homography_matrix, _ = cv2.findHomography(real_points, screen_points)
+            # Calculate the homography matrix using OpenCV
+            homography_matrix, _ = cv2.findHomography(real_points, screen_points)
 
-        # Use warpPerspective to align the current frame (ensuring it's the same size as the background)
-        aligned_frame = cv2.warpPerspective(frame_gray, homography_matrix, (background.shape[1], background.shape[0]))
+            # Use warpPerspective to align the current frame (ensuring it's the same size as the background)
+            aligned_frame = cv2.warpPerspective(frame_gray, homography_matrix, (background.shape[1], background.shape[0]))
 
-        # Create a mask to ignore non-white areas in the background
-        _, background_white_mask = cv2.threshold(background, 250, 255, cv2.THRESH_BINARY)
+            # Create a mask to ignore non-white areas in the background
+            _, background_white_mask = cv2.threshold(background, 250, 255, cv2.THRESH_BINARY)
 
-        # Dilate the background mask to make the white areas bigger
-        kernel = np.ones((10, 10), np.uint8)  # 5x5 kernel for dilation
-        dilated_background_mask = cv2.erode(background_white_mask, kernel, iterations=2)
+            # Dilate the background mask to make the white areas bigger
+            kernel = np.ones((10, 10), np.uint8)  # 5x5 kernel for dilation
+            dilated_background_mask = cv2.erode(background_white_mask, kernel, iterations=2)
 
-        # Invert the dilated background mask to get non-white areas as "black"
-        inverted_background_mask = cv2.bitwise_not(dilated_background_mask)
+            # Invert the dilated background mask to get non-white areas as "black"
+            inverted_background_mask = cv2.bitwise_not(dilated_background_mask)
 
-        # Apply the inverted mask on aligned_frame to extract new drawings (make black areas white)
-        foreground_mask = cv2.bitwise_or(aligned_frame, inverted_background_mask)
+            # Apply the inverted mask on aligned_frame to extract new drawings (make black areas white)
+            foreground_mask = cv2.bitwise_or(aligned_frame, inverted_background_mask)
 
-        # Save the intermediate images for inspection
-        cv2.imwrite("background_white_mask.png", background_white_mask)
-        cv2.imwrite("dilated_background_mask.png", dilated_background_mask)
-        cv2.imwrite("aligned_frame.png", aligned_frame)
-        cv2.imwrite("foreground_mask.png", foreground_mask)
+            # Save the intermediate images for inspection
+            cv2.imwrite("background_white_mask.png", background_white_mask)
+            cv2.imwrite("dilated_background_mask.png", dilated_background_mask)
+            cv2.imwrite("aligned_frame.png", aligned_frame)
+            cv2.imwrite("foreground_mask.png", foreground_mask)
 
-        # Overlay the aligned frame onto the background (to visualize registration)
-        overlay = cv2.addWeighted(background, 0.7, aligned_frame, 0.3, 0)
+            # Overlay the aligned frame onto the background (to visualize registration)
+            overlay = cv2.addWeighted(background, 0.7, aligned_frame, 0.3, 0)
 
-        # Save the overlay image
-        cv2.imwrite('overlay.png', overlay)
-        return foreground_mask  # Return the foreground mask for further processing
+            # Save the overlay image
+            cv2.imwrite('overlay.png', overlay)
+            return foreground_mask  # Return the foreground mask for further processing
+        except:
+            return None
 
     # Get monitor information
     def get_monitors_info(self):
@@ -219,6 +222,7 @@ class ProjectorWindow():
 
             
             mask = self.save_foreground_mask()
+
             if mask is not None:
                 equations_with_positions = process_equations(mask)
                 if equations_with_positions is not None:
@@ -239,7 +243,7 @@ class ProjectorWindow():
                             answer_position = (e[1][0], e[1][1])
                             answer_position = (answer_position[0] + 10, answer_position[1])
                             print(f"answer position: {answer_position}")
-                            answer_label = MXLabel(self.canvas, *answer_position, text=answer, color="red")
+                            answer_label = MXLabel(self.canvas, *answer_position, text=answer, colour="red")
                             self.entities.append(answer_label)
 
                     print(f"equations: {[e for e in equations_with_positions]}\nanswers: {answers}") 
