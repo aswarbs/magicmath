@@ -53,6 +53,7 @@ class ProjectorWindow(GameEntity):
 
         # Create a lock for thread synchronization
         self.lock = threading.Lock()
+        
 
         # Start a thread to detect corners once after the UI is displayed
         self.corners = None
@@ -116,7 +117,7 @@ class ProjectorWindow(GameEntity):
             _, background_white_mask = cv2.threshold(background, 250, 255, cv2.THRESH_BINARY)
 
             # Dilate the background mask to make the white areas bigger
-            kernel = np.ones((18, 18), np.uint8)  # 5x5 kernel for dilation
+            kernel = np.ones((25, 25), np.uint8)  # 5x5 kernel for dilation
             dilated_background_mask = cv2.erode(background_white_mask, kernel, iterations=2)
 
             # Invert the dilated background mask to get non-white areas as "black"

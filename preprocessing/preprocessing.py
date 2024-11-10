@@ -24,7 +24,7 @@ def adjust_brightness_contrast(img, brightness=0, contrast=0):
 
 
 
-def process_whiteboard_image(img, output_path="output_image.jpg", dark_threshold=50):
+def process_whiteboard_image(img, output_path="output_image.jpg", dark_threshold=40):
     # Read the image
 
     # Increase brightness and contrast before further processing
