@@ -1,8 +1,9 @@
-from GameEntity import GameEntity
+from engine.GameEntity import GameEntity
 import tkinter as tk
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from MTimeIntro import MTimeIntro
+from engine.MTimeIntro import MTimeIntro
 from PIL import Image, ImageTk
+import ctypes.wintypes
 
 class MMainMenu(GameEntity):
     def __init__(self, master):
@@ -19,6 +20,40 @@ class MMainMenu(GameEntity):
         self.master = master
         self.master.master.bind("<KeyPress-n>", self.on_key_press_1)  # Bind key "n"
         self.master.master.bind("<KeyPress-m>", self.on_key_press_2)  # Bind key "m"
+        self.setup()
+
+    # Get monitor information
+    def get_monitors_info(self):
+        user32 = ctypes.windll.user32
+        def _get_monitors_resolution():
+            monitors = []
+            monitor_enum_proc = ctypes.WINFUNCTYPE(
+                ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(ctypes.wintypes.RECT), ctypes.c_double)
+            def callback(hMonitor, hdcMonitor, lprcMonitor, dwData):
+                monitors.append((lprcMonitor.contents.left, lprcMonitor.contents.top,
+                                lprcMonitor.contents.right - lprcMonitor.contents.left,
+                                lprcMonitor.contents.bottom - lprcMonitor.contents.top))
+                return 1
+            user32.EnumDisplayMonitors(None, None, monitor_enum_proc(callback), 0)
+            return monitors
+        monitors = _get_monitors_resolution()
+        print(monitors)
+        #exit()
+        return monitors
+
+    def setup(self):
+        monitors = self.get_monitors_info()
+        if len(monitors) >= 2:
+            x1, y1, w1, h1 = monitors[1]
+            x1, y1, w1, h1 = (1536, 0, 640, 480) # trying to fix monitor issues
+            self.master.master.geometry("%dx%d+%d+%d" % (w1, h1, x1, y1))
+            self.master.master.overrideredirect(1)
+        else:
+            w1, h1 = monitors[0][2], monitors[0][3]
+            self.master.master.geometry("%dx%d+0+0" % (w1, h1))
+            self.master.master.overrideredirect(1)
+
+
 
     def draw(self, canvas: tk.Canvas):
 

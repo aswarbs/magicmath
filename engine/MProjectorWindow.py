@@ -9,8 +9,9 @@ import ctypes.wintypes
 from PIL import Image
 from preprocessing.preprocessing import process_equations
 from problemgen.generate_problem import program_answer, get_answer
+from engine.GameEntity import GameEntity
 
-class ProjectorWindow():
+class ProjectorWindow(GameEntity):
     def __init__(self):
         self.master = tk.Tk()
         self.master.title("Mathquest")

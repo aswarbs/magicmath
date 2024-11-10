@@ -1,7 +1,7 @@
 import threading
 import pyttsx3
-from GameEntity import GameEntity
-from GenAI.ProfileGen import Profile
+from engine.GameEntity import GameEntity
+from engine.GenAI.ProfileGen import Profile
 from PIL import Image, ImageTk
 import tkinter as tk
 

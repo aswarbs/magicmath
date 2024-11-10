@@ -1,5 +1,5 @@
 from enum import Enum
-from GenAI.ImageGen import *
+from engine.GenAI.ImageGen import *
 import datetime
 import random
 

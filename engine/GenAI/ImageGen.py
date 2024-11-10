@@ -1,5 +1,5 @@
 from openai import OpenAI
-from GenAI.Key import OPENAI_API_KEY
+from engine.GenAI.Key import OPENAI_API_KEY
 import requests
 
 def generate_and_download_image(api_key, prompt, image_filename="generated_image.png", size="256x256", n=1):

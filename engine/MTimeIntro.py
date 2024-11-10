@@ -1,7 +1,7 @@
-from GameEntity import GameEntity
+from engine.GameEntity import GameEntity
 import tkinter as tk
 from datetime import datetime, timedelta
-from MCharacterDialogue import MCharacterDialogue
+from engine.MCharacterDialogue import MCharacterDialogue
 
 class MTimeIntro(GameEntity):
     def __init__(self, master, year: str, location: str):

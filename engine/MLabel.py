@@ -1,4 +1,4 @@
-from GameEntity import GameEntity
+from engine.GameEntity import GameEntity
 import tkinter as tk
 
 class MLabel(GameEntity):

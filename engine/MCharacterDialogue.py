@@ -1,4 +1,4 @@
-from GameEntity import GameEntity
+from engine.GameEntity import GameEntity
 import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
