@@ -3,6 +3,7 @@ import tkinter as tk
 
 class MLabel(GameEntity):
     def __init__(self, master, text = "Label"):
+
         self.text = text
         self.text_id = None
         self.x = 0

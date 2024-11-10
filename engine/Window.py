@@ -11,12 +11,6 @@ class GameWindow():
         self.canvas = tk.Canvas(self.master, bg="white", width=640, height=480)
         self.canvas.pack(fill="both", expand=True)
 
-        # Load the background image
-        self.background_image = tk.PhotoImage(file="Assets/background.png")
-
-        # Set the background image on the canvas
-        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.background_image)
-
     def mainloop(self):
         # Run the main event loop
         while True:
