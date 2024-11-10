@@ -1,15 +1,17 @@
 from GameEntity import GameEntity
 import tkinter as tk
 from datetime import datetime, timedelta
-
+from MCharacterDialogue import MCharacterDialogue
 
 class MTimeIntro(GameEntity):
     def __init__(self, master, year: str, location: str):
+        self.master = master
         self.year = year
         self.location = location
         self.text_id = None
         self.rect_id = None
         self.title_id = None
+        self.dead = False
 
         self.x = 0  # x will be set dynamically for centering
         self.y = 0  # y will be set dynamically for centering
@@ -20,8 +22,20 @@ class MTimeIntro(GameEntity):
         self.start_time = datetime.now()
         # Target duration for fade-in (e.g., 1 second)
         self.fade_duration = timedelta(seconds=2)
+        self.exit_duration = timedelta(seconds=4)
+
+    def delete(self):
+        if self.text_id is not None:
+            self.master.canvas.delete(self.text_id)
+        if self.title_id is not None:
+            self.master.canvas.delete(self.title_id)
+        if self.rect_id is not None: self.master.canvas.delete(self.rect_id)
+        self.dead = True
 
     def draw(self, canvas: tk.Canvas):
+        if self.dead:
+            return
+
         if self.text_id is not None:
             canvas.delete(self.text_id)
 
@@ -54,9 +68,15 @@ class MTimeIntro(GameEntity):
         """Update the opacity based on the time elapsed since the start."""
         # Calculate elapsed time
         elapsed_time = datetime.now() - self.start_time
+        elapsed_time2 = datetime.now() - self.start_time
         # Clamp elapsed time to be within 0 and fade_duration
         if elapsed_time > self.fade_duration:
             elapsed_time = self.fade_duration
+
+        if elapsed_time2 > self.exit_duration:
+            print("TimeIntro DIED!")
+            self.master.entities.append(MCharacterDialogue(self.master))
+            self.delete()
 
         # Calculate opacity as a value between 0 and 255 based on elapsed time
         opacity = 255 - int(255 * (elapsed_time / self.fade_duration))
