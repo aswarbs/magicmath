@@ -6,6 +6,8 @@ from MTexLabel import MTexLabel
 
 if __name__ == "__main__":
     # Create and run the app
-    app = ProjectorWindow()
-
+    app = GameWindow()
+    pubert = MProfile(app.master, gen_profile(Era.INFORMATION))
+    app.entities.append(pubert)
+    pubert.speak("wefmoewmfkmefo")
     app.mainloop()

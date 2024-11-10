@@ -3,6 +3,7 @@ from GenAI.ImageGen import *
 import datetime
 import random
 
+
 def get_current_date_filename():
     current_date = datetime.datetime.now()
     filename = current_date.strftime("%Y-%m-%d_%H-%M-%S") + f".{current_date.microsecond // 10000:02d}"
@@ -14,6 +15,7 @@ class Profile():
         self.name = name
         self.image_path = image
 
+
 class Era(Enum):
     ANCIENT = "Ancient"
     CLASSICAL = "Classical"
@@ -23,6 +25,7 @@ class Era(Enum):
     MODERN = "Modern"
     ATOMIC = "Atomic"
     INFORMATION = "Futuristic"
+
 
 def gen_profile(era: Era) -> Profile:
     max_attempts = 10
