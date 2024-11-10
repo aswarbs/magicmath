@@ -6,13 +6,14 @@ import cv2
 from computer_vision.detect_corners import CameraCalibrator
 from engine.MXLabel import MXLabel
 import ctypes.wintypes
+from PIL import Image
 
 class ProjectorWindow():
     def __init__(self):
         self.master = tk.Tk()
         self.master.title("Mathquest")
-        self.screen_width = 800
-        self.screen_height = 600
+        self.screen_width = 640
+        self.screen_height = 480
         self.entities = []
 
         # Set window size to 640x480 (4:3 ratio)
@@ -45,7 +46,7 @@ class ProjectorWindow():
         self.display_content()
 
         # Initialize CameraCalibrator and fetch corners
-        self.camera_calibrator = CameraCalibrator(camera_index=1)
+        self.camera_calibrator = CameraCalibrator()
 
         # Create a lock for thread synchronization
         self.lock = threading.Lock()
@@ -56,11 +57,85 @@ class ProjectorWindow():
         self.calibration_thread.start()
 
         # Start a thread to draw the center point
-        #self.draw_thread = threading.Thread(target=self.draw_center, daemon=True)
-        #self.draw_thread.start()
+        self.draw_thread = threading.Thread(target=self.draw_center, daemon=True)
+        self.draw_thread.start()
 
         self.completion_thread = threading.Thread(target=self.complete_formula, daemon=True)
         self.completion_thread.start()
+
+    
+
+    def save_tkinter_background(self):
+        # Save the Tkinter canvas content to a PostScript file
+        self.canvas.postscript(file="projection.ps", colormode='color')
+
+        # Open the PostScript file, convert it to PNG format, and save
+        img = Image.open("projection.ps")
+        img = img.resize((640,480))
+
+        img.save("projection.png", "png")
+        print("Tkinter window saved as 'projection.png'")
+
+    def save_foreground_mask(self):
+        """
+        Isolate and save the mask of new drawings on the whiteboard using warpPerspective.
+        Also save an overlay of the registration on the background, excluding non-white areas from Tkinter.
+        """
+        # Synchronize access to frame and corner data
+        with self.lock:
+            frame = self.camera_calibrator.frame
+            corners = self.corners
+
+        # Ensure corners have been set up and frame is captured
+        if corners is None or frame is None:
+            print(f"frame: {frame} corners: {corners}")
+            return None
+
+        # Read the background image in grayscale (projection-only baseline)
+        background = cv2.imread('projection.png', cv2.IMREAD_GRAYSCALE)
+
+        # Convert the current frame to grayscale
+        frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        print(f"screen corners: {self.screen_corners}. real corners: {corners}")
+
+        # Convert the real-world corners and screen corners to numpy arrays
+        real_points = np.array(corners, dtype=np.float32).reshape(-1, 1, 2)
+        screen_points = np.array(self.screen_corners, dtype=np.float32).reshape(-1, 1, 2)
+
+        # Calculate the homography matrix using OpenCV
+        homography_matrix, _ = cv2.findHomography(real_points, screen_points)
+
+        # Use warpPerspective to align the current frame (ensuring it's the same size as the background)
+        aligned_frame = cv2.warpPerspective(frame_gray, homography_matrix, (background.shape[1], background.shape[0]))
+
+        # Create a mask to ignore non-white areas in the background
+        _, background_white_mask = cv2.threshold(background, 250, 255, cv2.THRESH_BINARY)
+
+        # Dilate the background mask to make the white areas bigger
+        kernel = np.ones((10, 10), np.uint8)  # 5x5 kernel for dilation
+        dilated_background_mask = cv2.erode(background_white_mask, kernel, iterations=2)
+
+        # Invert the dilated background mask to get non-white areas as "black"
+        inverted_background_mask = cv2.bitwise_not(dilated_background_mask)
+
+        # Apply the inverted mask on aligned_frame to extract new drawings (make black areas white)
+        foreground_mask = cv2.bitwise_or(aligned_frame, inverted_background_mask)
+
+        # Save the intermediate images for inspection
+        cv2.imwrite("background_white_mask.png", background_white_mask)
+        cv2.imwrite("dilated_background_mask.png", dilated_background_mask)
+        cv2.imwrite("aligned_frame.png", aligned_frame)
+        cv2.imwrite("foreground_mask.png", foreground_mask)
+
+        # Overlay the aligned frame onto the background (to visualize registration)
+        overlay = cv2.addWeighted(background, 0.7, aligned_frame, 0.3, 0)
+
+        # Save the overlay image
+        cv2.imwrite('overlay.png', overlay)
+        print("Overlay saved as 'overlay.png'.")
+
+        return foreground_mask  # Return the foreground mask for further processing
 
     # Get monitor information
     def get_monitors_info(self):
@@ -77,21 +152,21 @@ class ProjectorWindow():
             user32.EnumDisplayMonitors(None, None, monitor_enum_proc(callback), 0)
             return monitors
         monitors = _get_monitors_resolution()
+        print(monitors)
+        #exit()
         return monitors
 
     def setup(self):
         monitors = self.get_monitors_info()
         if len(monitors) >= 2:
             x1, y1, w1, h1 = monitors[1]
+            x1, y1, w1, h1 = (1536, 0, 640, 480) # trying to fix monitor issues
             self.master.geometry("%dx%d+%d+%d" % (w1, h1, x1, y1))
             self.master.overrideredirect(1)
         else:
             w1, h1 = monitors[0][2], monitors[0][3]
             self.master.geometry("%dx%d+0+0" % (w1, h1))
             self.master.overrideredirect(1)
-
-        
-
 
 
     def display_content(self):
@@ -101,7 +176,7 @@ class ProjectorWindow():
         # Create labels for each corner
         #self.label_tl = tk.Label(self.canvas, text="X", font=x_font, fg=x_color, bg="white")
         # Offset value (change this value to move labels farther or closer)
-        offset = 20
+        offset = 0
 
         # Create labels with offset from each corner
         self.label_tl = MXLabel(self.canvas, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
@@ -109,6 +184,9 @@ class ProjectorWindow():
         self.label_bl = MXLabel(self.canvas, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
         self.label_br = MXLabel(self.canvas, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
         self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
+
+        self.center_label = MXLabel(self.canvas, -10, -10, colour="red")
+        self.entities.append(self.center_label)
         
         #self.master.update_idletasks()
 
@@ -119,12 +197,14 @@ class ProjectorWindow():
             time.sleep(1)
     
 
+    def flush(self):
+        pass
 
     def draw_center(self):
         # to test projection
         # draw to the center of the tkinter canvas using only camera corners
-        x_font = ("Arial", 36, "bold")
-        self.center_label = tk.Label(self.canvas, text="X", fg="red", bg="white", font=x_font)
+
+
 
         while True:
             time.sleep(1)
@@ -149,7 +229,8 @@ class ProjectorWindow():
                 continue
 
             # Place the label at the center screen position
-            self.center_label.place(x=center_screen[0], y=center_screen[1], anchor=tk.CENTER)
+            self.center_label.x = center_screen[0]
+            self.center_label.y = center_screen[1]
 
 
 
@@ -159,6 +240,8 @@ class ProjectorWindow():
         # Run the main event loop
         _ = [e.draw(self.canvas) for e in self.entities]
         _ = [e.think() for e in self.entities]
+        self.save_tkinter_background()
+        self.save_foreground_mask()
         self.master.update()
 
     
@@ -185,16 +268,9 @@ class ProjectorWindow():
         with self.lock:
             real_points = np.array(self.corners, dtype=np.float32)
 
-        # Define the screen corners (top-left, top-right, bottom-left, bottom-right)
-        screen_corners = [
-            (0, 0),  # Top-left corner
-            (self.screen_width, 0),  # Top-right corner
-            (0, self.screen_height),  # Bottom-left corner
-            (self.screen_width, self.screen_height)  # Bottom-right corner
-        ]
 
         # Convert corners to numpy arrays for OpenCV
-        screen_points = np.array(screen_corners, dtype=np.float32)
+        screen_points = np.array(self.screen_corners, dtype=np.float32)
 
         # Calculate the homography matrix using OpenCV
         homography_matrix, _ = cv2.findHomography(real_points, screen_points)

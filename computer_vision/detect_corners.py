@@ -8,7 +8,7 @@ from computer_vision.image_to_latex import FormulaExtractor
 class CameraCalibrator:
     def __init__(self, camera_index=0):
         
-        self.default_corners = [(116, 318), (545, 315), (130, 42), (520, 40)]
+        self.default_corners = [(108, 128), (509, 122), (554, 430), (68, 433)]
         self.frame = None
 
         # Initialize camera
@@ -19,7 +19,7 @@ class CameraCalibrator:
         self.upper_green = np.array([85, 255, 255])  # Upper bound for lime green
         
         # Set minimum and maximum area to filter noise and small contours
-        self.min_area = 1
+        self.min_area = 5
         self.max_area = 5000
         self.pix2text = FormulaExtractor()
 
@@ -75,7 +75,8 @@ class CameraCalibrator:
 
         
     def detect_corners(self):
-        if self.frame is None: return
+        if self.frame is None:
+            return
 
         # Convert the frame to HSV color space for better color detection
         hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
@@ -115,17 +116,32 @@ class CameraCalibrator:
 
         # Draw all contours on the frame
         cv2.drawContours(enhanced_frame, contours, -1, (0, 255, 255), 1)  # Yellow contours for visibility
-        
+        cv2.imwrite("corners.png", enhanced_frame)
 
         if len(detected_x_positions) == 4:
-            print(f"corners: {detected_x_positions}")
-            return detected_x_positions
-        else:
-            return self.default_corners
+            # Sort corners by y-coordinate (top two first, then bottom two)
+            detected_x_positions.sort(key=lambda point: point[1])
+            
+            # Ensure the top two are sorted left-to-right and same for the bottom two
+            top_two = sorted(detected_x_positions[:2], key=lambda point: point[0])
+            bottom_two = sorted(detected_x_positions[2:], key=lambda point: point[0])
+
+            # Arrange as top-left, top-right, bottom-right, bottom-left
+            ordered_corners = [top_two[0], top_two[1], bottom_two[0], bottom_two[1]]
+            
+            print(f"\n\n\nEPIC DETECTED CORNERS: {ordered_corners}")
+            self.default_corners = ordered_corners
+            
+            return ordered_corners
         
+        else:
+            print(f"\n\n\nun epic default corners: {self.default_corners}")
+            return self.default_corners
+
 
     
     def release_camera(self):
         # Release the camera and close all OpenCV windows
         self.cap.release()
         cv2.destroyAllWindows()
+
