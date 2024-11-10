@@ -4,6 +4,10 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from engine.MTimeIntro import MTimeIntro
 from PIL import Image, ImageTk
 import ctypes.wintypes
+from engine.MProjectorWindow import ProjectorWindow
+from engine.MTestWindow import TestWindow
+import time
+
 
 class MMainMenu(GameEntity):
     def __init__(self, master):
@@ -105,11 +109,23 @@ class MMainMenu(GameEntity):
     def on_key_press_1(self, event):
         print("Key 1 pressed! Entering freemode...")
         self.delete()
-        self.master.entities.append(MTimeIntro(self.master, "2024", "Cario"))
+        self.master.master.destroy()
+        app = TestWindow()
+
+        while 1:
+            app.mainloop()
+            time.sleep(0.1)
+
+        #self.master.entities.append(MTimeIntro(self.master, "2024", "Cario"))
         # Here you can implement logic for freemode entry
 
     # Function for when key "2" is pressed
     def on_key_press_2(self, event):
         print("Key 2 pressed! Entering story mode...")
         self.delete()
-        # Here you can implement logic for story mode entry
+        self.master.master.destroy()
+        app = ProjectorWindow()
+
+        while 1:
+            app.mainloop()
+            time.sleep(0.1)

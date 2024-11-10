@@ -18,7 +18,7 @@ class CameraCalibrator:
         self.upper_green = np.array([85, 255, 255])  # Upper bound for lime green
         
         # Set minimum and maximum area to filter noise and small contours
-        self.min_area = 5
+        self.min_area = 2
         self.max_area = 5000
 
         run_thread = threading.Thread(target=self.mainloop)

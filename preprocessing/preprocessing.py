@@ -24,64 +24,35 @@ def adjust_brightness_contrast(img, brightness=0, contrast=0):
 
 
 
-# Function to process the image and separate black (text) and white (background)
-def process_whiteboard_image(img, output_path="output_image.jpg"):
+def process_whiteboard_image(img, output_path="output_image.jpg", dark_threshold=50):
     # Read the image
 
     # Increase brightness and contrast before further processing
-    img = adjust_brightness_contrast(img, brightness=30, contrast=60)
+    img = adjust_brightness_contrast(img, brightness=30, contrast=10)
     cv2.imwrite("bright_image.png", img)
 
-    # Convert to grayscale
-    #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     # Apply binary thresholding to get a black and white image
-    _, binary = cv2.threshold(img, 230, 255, cv2.THRESH_BINARY_INV)
+    _, binary = cv2.threshold(img, 245, 255, cv2.THRESH_BINARY_INV)
 
-    # OPTIONAL: Clean up noise using morphological operations (e.g., closing)
-    kernel = np.ones((1, 1), np.uint8)
+    # Clean up noise using morphological operations (e.g., closing)
+    kernel = np.ones((5, 5), np.uint8)
     cleaned = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
 
     # Apply dilation to thicken the text
     dilated_text = cv2.dilate(cleaned, kernel, iterations=1)
 
     # Invert the binary image to separate the whiteboard (white) from the text (black)
-    whiteboard = cv2.bitwise_and(img, img, mask=cv2.bitwise_not(dilated_text))  # White background
     text = cv2.bitwise_and(img, img, mask=dilated_text)  # Thicker black text
 
-    # Convert BGR images to RGB for displaying using matplotlibs
-    whiteboard_rgb = cv2.cvtColor(whiteboard, cv2.COLOR_BGR2RGB)
-    text_rgb = cv2.cvtColor(text, cv2.COLOR_BGR2RGB)
-
     # Overlay the thicker text on the original image
-    overlay_img = img
     overlay_img = cv2.addWeighted(img, 0.7, text, -0.4, 0)
 
-    # Convert the overlay image to RGB for displaying
-    overlay_img_rgb = cv2.cvtColor(overlay_img, cv2.COLOR_BGR2RGB)
+    # Threshold overlay_img to keep only dark pixels
+    dark_pixels = overlay_img < dark_threshold
+    overlay_img[~dark_pixels] = 255  # Set pixels lighter than threshold to white
 
     # Save the overlay image as a file
     cv2.imwrite(output_path, overlay_img)
-
-    """# Plotting the images
-    plt.figure(figsize=(12, 6))
-
-    plt.subplot(1, 3, 1)
-    plt.title("Whiteboard (Background)")
-    plt.imshow(whiteboard_rgb)
-    plt.axis("off")
-
-    plt.subplot(1, 3, 2)
-    plt.title("Thicker Text (Black)")
-    plt.imshow(text_rgb)
-    plt.axis("off")
-
-    plt.subplot(1, 3, 3)
-    plt.title("Overlay Text on Original Image")
-    plt.imshow(overlay_img)
-    plt.axis("off")
-
-    plt.show()"""
 
     return overlay_img
 

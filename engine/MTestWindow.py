@@ -8,20 +8,16 @@ from engine.MXLabel import MXLabel
 import ctypes.wintypes
 from PIL import Image
 from preprocessing.preprocessing import process_equations
-from problemgen.generate_problem import program_answer, get_answer
 from engine.GameEntity import GameEntity
+import random
 
-class ProjectorWindow(GameEntity):
+class TestWindow(GameEntity):
     def __init__(self):
         self.master = tk.Tk()
-        self.master.title("Mathquest")
+        self.master.title("Mathquest - Times Tables")
         self.screen_width = 640
         self.screen_height = 480
         self.entities = []
-
-        # Set window size to 640x480 (4:3 ratio)
-        #self.master.geometry("640x480")
-        
         self.canvas = tk.Canvas(self.master, bg="white", width=self.screen_width, height=self.screen_height)
         self.canvas.pack()
 
@@ -39,47 +35,140 @@ class ProjectorWindow(GameEntity):
             (0, 0)   # Bottom-right corner (to be updated later)
         ]
         
-
-        # Set background to white
-        self.master.configure(bg="white")
+        
+        # Other initializations
+        self.current_problem = None  # Store the current multiplication problem
+        self.problem_label = None    # Label to display the problem
 
         self.setup()
-
-        # Display the X labels
         self.display_content()
-
-        # Initialize CameraCalibrator and fetch corners
+        
         self.camera_calibrator = CameraCalibrator()
-
-        # Create a lock for thread synchronization
         self.lock = threading.Lock()
-
-        # Start a thread to detect corners once after the UI is displayed
         self.corners = None
         self.calibration_thread = threading.Thread(target=self.fetch_corners, daemon=True)
         self.calibration_thread.start()
-
-        # Start a thread to draw the center point
         self.draw_thread = threading.Thread(target=self.draw_center, daemon=True)
         self.draw_thread.start()
+        
+        # Display initial multiplication problem
+        self.generate_problem()
 
-    
+    def fetch_corners(self):
+        while True:
+            # Capture a single frame to detect corners
+            detected_corners = self.camera_calibrator.detect_corners()
+
+            # Use a lock to safely update corners data
+            with self.lock:
+                self.corners = detected_corners
+
+            time.sleep(1)
 
     def save_tkinter_background(self):
         try:
 
-            # Save the Tkinter canvas content to a PostScript file
-            self.canvas.postscript(file="projection.ps", colormode='color')
-
-            # Open the PostScript file, convert it to PNG format, and save
-            img = Image.open("projection.ps")
-            img = img.resize((640,480))
 
             with self.lock:
+                    
+                # Save the Tkinter canvas content to a PostScript file
+                self.canvas.postscript(file="projection.ps", colormode='color')
+
+                # Open the PostScript file, convert it to PNG format, and save
+                img = Image.open("projection.ps")
+                img = img.resize((640,480))
                 img.save("projection.png", "png")
         except:
             pass
         
+
+    def mainloop(self):
+        # Run the main event loop
+        #print(f"Entities: {self.entities}")
+        _ = [e.draw(self.canvas) for e in self.entities]
+        _ = [e.think() for e in self.entities]
+        
+        self.save_tkinter_background()
+
+                        
+        self.master.update()
+
+
+    def display_content(self):
+        # Red X font and color
+
+
+        # Create labels for each corner
+        #self.label_tl = tk.Label(self.canvas, text="X", font=x_font, fg=x_color, bg="white")
+        # Offset value (change this value to move labels farther or closer)
+        offset = 0
+
+        # Create labels with offset from each corner
+        self.label_tl = MXLabel(self, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
+        self.label_tr = MXLabel(self, self.screen_corners[1][0] - offset, self.screen_corners[1][1] + offset)
+        self.label_bl = MXLabel(self, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
+        self.label_br = MXLabel(self, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
+        self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
+
+        self.center_label = MXLabel(self, -10, -10, colour="red")
+        self.entities.append(self.center_label)
+        
+        #self.master.update_idletasks()
+
+    def generate_problem(self):
+        """Generates a new multiplication problem and displays it."""
+        # Randomly choose two numbers for multiplication
+        num1 = random.randint(1, 12)
+        num2 = random.randint(1, 12)
+        self.current_problem = (num1, num2)
+        problem_text = f"{num1} x {num2} = ?"
+
+        # Display the new problem on the canvas
+        if self.problem_label:
+            self.problem_label.delete()  # Remove the old problem
+        self.problem_label = MXLabel(self, 320, 50, text=problem_text, colour="blue")
+        self.problem_label.tag = "PROBLEM"
+        self.entities.append(self.problem_label)
+
+    # Get monitor information
+    def get_monitors_info(self):
+        user32 = ctypes.windll.user32
+        def _get_monitors_resolution():
+            monitors = []
+            monitor_enum_proc = ctypes.WINFUNCTYPE(
+                ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(ctypes.wintypes.RECT), ctypes.c_double)
+            def callback(hMonitor, hdcMonitor, lprcMonitor, dwData):
+                monitors.append((lprcMonitor.contents.left, lprcMonitor.contents.top,
+                                lprcMonitor.contents.right - lprcMonitor.contents.left,
+                                lprcMonitor.contents.bottom - lprcMonitor.contents.top))
+                return 1
+            user32.EnumDisplayMonitors(None, None, monitor_enum_proc(callback), 0)
+            return monitors
+        monitors = _get_monitors_resolution()
+        print(monitors)
+        #exit()
+        return monitors
+
+    def setup(self):
+        monitors = self.get_monitors_info()
+        if len(monitors) >= 2:
+            x1, y1, w1, h1 = monitors[1]
+            x1, y1, w1, h1 = (1536, 0, 640, 480) # trying to fix monitor issues
+            self.master.geometry("%dx%d+%d+%d" % (w1, h1, x1, y1))
+            self.master.overrideredirect(1)
+        else:
+            w1, h1 = monitors[0][2], monitors[0][3]
+            self.master.geometry("%dx%d+0+0" % (w1, h1))
+            self.master.overrideredirect(1)
+
+
+
+    def check_answer(self, user_answer):
+        """Check if the user's answer is correct."""
+        correct_answer = self.current_problem[0] * self.current_problem[1]
+        print(f"user answer: {user_answer} correct answer: {correct_answer}")
+        return str(correct_answer) in str(user_answer)
+
     def save_foreground_mask(self):
         """
         Isolate and save the mask of new drawings on the whiteboard using warpPerspective.
@@ -116,7 +205,7 @@ class ProjectorWindow(GameEntity):
             _, background_white_mask = cv2.threshold(background, 250, 255, cv2.THRESH_BINARY)
 
             # Dilate the background mask to make the white areas bigger
-            kernel = np.ones((18, 18), np.uint8)  # 5x5 kernel for dilation
+            kernel = np.ones((15, 15), np.uint8)  # 5x5 kernel for dilation
             dilated_background_mask = cv2.erode(background_white_mask, kernel, iterations=2)
 
             # Invert the dilated background mask to get non-white areas as "black"
@@ -139,147 +228,35 @@ class ProjectorWindow(GameEntity):
             return foreground_mask  # Return the foreground mask for further processing
         except:
             return None
-
-    # Get monitor information
-    def get_monitors_info(self):
-        user32 = ctypes.windll.user32
-        def _get_monitors_resolution():
-            monitors = []
-            monitor_enum_proc = ctypes.WINFUNCTYPE(
-                ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(ctypes.wintypes.RECT), ctypes.c_double)
-            def callback(hMonitor, hdcMonitor, lprcMonitor, dwData):
-                monitors.append((lprcMonitor.contents.left, lprcMonitor.contents.top,
-                                lprcMonitor.contents.right - lprcMonitor.contents.left,
-                                lprcMonitor.contents.bottom - lprcMonitor.contents.top))
-                return 1
-            user32.EnumDisplayMonitors(None, None, monitor_enum_proc(callback), 0)
-            return monitors
-        monitors = _get_monitors_resolution()
-        print(monitors)
-        #exit()
-        return monitors
-
-    def setup(self):
-        monitors = self.get_monitors_info()
-        if len(monitors) >= 2:
-            x1, y1, w1, h1 = monitors[1]
-            x1, y1, w1, h1 = (1536, 0, 640, 480) # trying to fix monitor issues
-            self.master.geometry("%dx%d+%d+%d" % (w1, h1, x1, y1))
-            self.master.overrideredirect(1)
-        else:
-            w1, h1 = monitors[0][2], monitors[0][3]
-            self.master.geometry("%dx%d+0+0" % (w1, h1))
-            self.master.overrideredirect(1)
-
-
-    def display_content(self):
-        # Red X font and color
-
-
-        # Create labels for each corner
-        #self.label_tl = tk.Label(self.canvas, text="X", font=x_font, fg=x_color, bg="white")
-        # Offset value (change this value to move labels farther or closer)
-        offset = 0
-
-        # Create labels with offset from each corner
-        self.label_tl = MXLabel(self, self.screen_corners[0][0] + offset, self.screen_corners[0][1] + offset)
-        self.label_tr = MXLabel(self, self.screen_corners[1][0] - offset, self.screen_corners[1][1] + offset)
-        self.label_bl = MXLabel(self, self.screen_corners[2][0] + offset, self.screen_corners[2][1] - offset)
-        self.label_br = MXLabel(self, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
-        self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
-
-        self.center_label = MXLabel(self, -10, -10, colour="red")
-        self.entities.append(self.center_label)
         
-        #self.master.update_idletasks()
-
-
-    def flush(self):
-        pass
-
     def draw_center(self):
-
         while True:
             time.sleep(1)
-
-
             if not self.corners:
                 continue
-
-            # Get the real-world corners (top-left, top-right, bottom-left, bottom-right)
             real_points = np.array(self.corners, dtype=np.float32)
-
-            # Calculate the center of the real-world quadrilateral formed by the corners
             center_real = np.mean(real_points, axis=0)
-
-            # Convert real-world coordinates to screen coordinates
             center_screen = self.real_to_screen(center_real)
-
-            if center_screen is None:
+            if center_screen is None or center_screen[0] < 0 or center_screen[1] < 0:
                 continue
-
-            # If the center screen coordinates are out of bounds, skip placing the label
-            if center_screen[0] < 0 or center_screen[1] < 0:
-                continue
-
-            # Place the label at the center screen position
             self.center_label.x = center_screen[0]
             self.center_label.y = center_screen[1]
-
-            
             mask = self.save_foreground_mask()
-
             if mask is not None:
                 equations_with_positions = process_equations(mask)
-                
-                # remove existing label (this limits the maximum number of labels to 1 unfortunately)
                 for _e in self.entities:
                     if _e.tag == "ANSWER":
                         _e.delete()
                 if equations_with_positions is not None:
                     answers = []
                     for e in equations_with_positions:
-                        answer = None
-                        try:
-                            answer = program_answer(e[0])
-                        except:
-                            try:
-                                answer = get_answer(e[0])
-                            except:
-                                pass
-                        answers.append(answer)
-                        
-                        if answer is not None:
-
-                            # draw the answer to the right of the question
-                            answer_position = (e[1][0], e[1][1])
-                            answer_position = (answer_position[0] + 10, answer_position[1])
-                            print(f"answer position: {answer_position}")
-                            answer_label = MXLabel(self, *answer_position, text=answer, colour="red")
-                            answer_label.tag = "ANSWER"
-
-                            self.entities.append(answer_label)
-
-                    print(f"equations: {[e for e in equations_with_positions]}\nanswers: {answers}") 
-
-    def mainloop(self):
-        # Run the main event loop
-        #print(f"Entities: {self.entities}")
-        _ = [e.draw(self.canvas) for e in self.entities]
-        _ = [e.think() for e in self.entities]
-        self.save_tkinter_background()
-        self.master.update()
-
-    def fetch_corners(self):
-        while True:
-            # Capture a single frame to detect corners
-            detected_corners = self.camera_calibrator.detect_corners()
-
-            # Use a lock to safely update corners data
-            with self.lock:
-                self.corners = detected_corners
-
-            time.sleep(1)
+                        print(f"e is {e}")
+                        user_answer = e[0]
+                        if self.check_answer(user_answer):
+                            self.generate_problem()  # New problem on correct answer
+                            print("Correct answer! Generating new problem.")
+                        else:
+                            print("Incorrect, try again.")
 
     def real_to_screen(self, real_point):
         """
@@ -308,3 +285,4 @@ class ProjectorWindow(GameEntity):
         screen_x, screen_y = screen_point[0][0]
 
         return (screen_x, screen_y)
+ 

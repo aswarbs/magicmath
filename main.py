@@ -1,4 +1,5 @@
 """from engine.MProjectorWindow import ProjectorWindow
+from engine.MTestWindow import TestWindow
 import time
 
 if __name__ == "__main__":
@@ -8,6 +9,7 @@ if __name__ == "__main__":
     while 1:
         app.mainloop()
         time.sleep(0.1)"""
+
 
 from engine.Window import GameWindow
 from engine.MLabel import MLabel
