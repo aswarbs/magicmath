@@ -184,12 +184,14 @@ def extract_equation_groups(image_path):
             text_percentage = (text_pixels / total_pixels) * 100
 
             # Only add the original crop to the list if the text percentage is above 10%
-            if text_percentage >= 10:
+            if text_percentage >= 5:
                 # Append the equation crop along with its full bounding box (x, y, w, h)
                 equation_groups.append({
                     'equation': cropped_equation,  # Cropped equation image
                     'bounding_box': (x, y, w, h)  # Full bounding box (x, y, width, height)
                 })
+            else:
+                print("Didn't append contour (IT DIDN'T HAVE ENOUGH TEXT!)")
 
     return equation_groups, img_cropped, binary_cropped
 
@@ -335,19 +337,9 @@ def process_equations(image_path = "goodimg.jpg"):
         # Extract LaTeX from the PIL image
         try:
 
-            latex_string = get_latex_equation_from_pillow(pil_image)
-
-            """
-            latex_string = p.extract_latex_from_image(pil_image)
-
-            # Clean up the LaTeX string for Matplotlib
-            # Remove $$ from the LaTeX string if it has them
-            latex_string = [l.replace('$$', '') for l in latex_string]
-            latex_string = [l.replace('\n', "") for l in latex_string]
-
-            # Optional: Wrap the entire string in single-dollar signs for inline math
-            latex_string = [f"{l}" for l in latex_string]
-            """
+            pil_image.save(f"eq_{index}.jpg", format="JPEG")
+            latex_string = get_latex_from_image_path(f"eq_{index}.jpg")
+            print(f"Latex String obtained :: {latex_string}")
 
         except Exception as e:
             latex_string = "Extraction failed"
