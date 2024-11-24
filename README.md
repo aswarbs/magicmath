@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/aswarbs/magicmath">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/magicmathlogo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Magicmath</h3>
