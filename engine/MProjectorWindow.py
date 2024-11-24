@@ -8,8 +8,10 @@ from engine.MXLabel import MXLabel
 import ctypes.wintypes
 from PIL import Image
 from preprocessing.preprocessing import process_equations
-from problemgen.generate_problem import program_answer, get_answer
+from problemgen.generate_problem import program_answer, get_answer, get_explanation
 from engine.GameEntity import GameEntity
+from engine.TTS import TTS
+
 
 class ProjectorWindow(GameEntity):
     def __init__(self):
@@ -18,10 +20,17 @@ class ProjectorWindow(GameEntity):
         self.screen_width = 640
         self.screen_height = 480
         self.entities = []
+        self.equations_with_positions = []
+        self.answers = []
+
+        self.tts = TTS()
 
         # Set window size to 640x480 (4:3 ratio)
         #self.master.geometry("640x480")
         
+        # Bind the space key to fetch the latest question-answer combo
+        self.master.bind("<space>", self.get_latest_question_answer)
+
         self.canvas = tk.Canvas(self.master, bg="white", width=self.screen_width, height=self.screen_height)
         self.canvas.pack()
 
@@ -53,7 +62,6 @@ class ProjectorWindow(GameEntity):
 
         # Create a lock for thread synchronization
         self.lock = threading.Lock()
-        
 
         # Start a thread to detect corners once after the UI is displayed
         self.corners = None
@@ -65,6 +73,26 @@ class ProjectorWindow(GameEntity):
         self.draw_thread.start()
 
     
+    def get_latest_question_answer(self, event=None):
+        """
+        Retrieve and display the most recent question and answer combo when the space key is pressed.
+        """
+
+        if len(self.answers) == 0 :
+            print("filtered out")
+            return
+
+
+        equation = self.equations_with_positions[0][0]
+        answer = self.answers[0]
+
+        text = get_explanation(equation, answer)
+
+        self.tts.speak(text)
+
+
+        print(f"talking about : {equation} with answer: {answer}")
+        
 
     def save_tkinter_background(self):
         try:
@@ -189,7 +217,7 @@ class ProjectorWindow(GameEntity):
         self.label_br = MXLabel(self, self.screen_corners[3][0] - offset, self.screen_corners[3][1] - offset)
         self.entities.extend([self.label_tl, self.label_tr, self.label_br, self.label_bl])
 
-        self.center_label = MXLabel(self, -10, -10, colour="red")
+        self.center_label = MXLabel(self, -10, -10, colour="gray")
         self.entities.append(self.center_label)
         
         #self.master.update_idletasks()
@@ -231,15 +259,15 @@ class ProjectorWindow(GameEntity):
             mask = self.save_foreground_mask()
 
             if mask is not None:
-                equations_with_positions = process_equations(mask)
+                self.equations_with_positions = process_equations(mask)
                 
                 # remove existing label (this limits the maximum number of labels to 1 unfortunately)
                 for _e in self.entities:
                     if _e.tag == "ANSWER":
                         _e.delete()
-                if equations_with_positions is not None:
-                    answers = []
-                    for e in equations_with_positions:
+                if self.equations_with_positions is not None:
+                    self.answers = []
+                    for e in self.equations_with_positions:
                         answer = None
                         try:
                             answer = program_answer(e[0])
@@ -248,7 +276,7 @@ class ProjectorWindow(GameEntity):
                                 answer = get_answer(e[0])
                             except:
                                 pass
-                        answers.append(answer)
+                        self.answers.append(answer)
                         
                         if answer is not None:
 
@@ -261,7 +289,8 @@ class ProjectorWindow(GameEntity):
 
                             self.entities.append(answer_label)
 
-                    print(f"equations: {[e for e in equations_with_positions]}\nanswers: {answers}") 
+
+                    print(f"equations: {[e for e in self.equations_with_positions]}\nanswers: {self.answers}") 
 
     def mainloop(self):
         # Run the main event loop

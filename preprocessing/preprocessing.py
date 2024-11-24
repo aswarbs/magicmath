@@ -159,7 +159,7 @@ def extract_equation_groups(image):
             text_percentage = (text_pixels / total_pixels) * 100
 
             # Only add the original crop to the list if the text percentage is above 10%
-            if text_percentage >= 2:
+            if text_percentage >= 0:
                 # Append the equation crop along with its full bounding box (x, y, w, h)
                 equation_groups.append({
                     'equation': cropped_equation,  # Cropped equation image

@@ -23,7 +23,7 @@ class CameraCalibrator:
 
         run_thread = threading.Thread(target=self.mainloop)
         run_thread.start()
-
+ 
     def mainloop(self):
 
         while 1:
