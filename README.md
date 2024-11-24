@@ -37,8 +37,10 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About Magicmath
-
-![Magicmath Demo](images/magicmath1.jpg)
+<div align="center">
+  <img src="images/magicmath1.jpg" alt="Demo 1" width="70%">
+  <br />
+</div>
 
 Magicmath is a free, open-source alternative to Apple Intelligence™ for mathematics. It goes beyond basic math to handle advanced notations like summations (Σ) and λ-calculus. By combining augmented reality with computer vision, Magicmath transforms how you interact with whiteboards for math and logic, adding features like:
 
