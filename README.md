@@ -31,7 +31,7 @@
   </p>
 </div>
 
-![Magicmath Demo](images/9bgtnt.gif)
+<!-- ![Magicmath Demo](images/9bgtnt.gif) -->
 
 
 
