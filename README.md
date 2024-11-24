@@ -31,17 +31,22 @@
   </p>
 </div>
 
+![Magicmath Demo](images/9bgtnt.gif)
+
+
 
 <!-- ABOUT THE PROJECT -->
 ## About Magicmath
 
-[![Product Screenshot][product-screenshot]](https://example.com)
+![Magicmath Demo](images/magicmath1.jpg)
 
 Magicmath is a free, open-source alternative to Apple Intelligence™ for mathematics. It goes beyond basic math to handle advanced notations like summations (Σ) and λ-calculus. By combining augmented reality with computer vision, Magicmath transforms how you interact with whiteboards for math and logic, adding features like:
 
 - Parsing complex mathematical expressions.
 - Dynamic rendering of solutions in **LaTeX**.
 - Explaining solutions with **LLM-powered TTS**.
+
+![Magicmath Demo](images/magicmath2.jpg)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -68,7 +73,6 @@ Follow these steps to set up Magicmath locally.
   ```sh
   pip install -r requirements.txt
 
-
 ## Usage
 
 Magicmath uses a webcam and projector to:
@@ -81,24 +85,13 @@ For more examples and guides, refer to the documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
---
+---
 
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,3 +128,11 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[OpenCV-shield]: https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white
+[OpenCV-url]: https://opencv.org/
+
+[Python-shield]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python-url]: https://www.python.org/
+
+[Tkinter-shield]: https://img.shields.io/badge/Tkinter-FF6F00?style=for-the-badge&logo=python&logoColor=white
+[Tkinter-url]: https://docs.python.org/3/library/tk.html
