@@ -113,26 +113,28 @@ Follow these steps to set up Magicmath locally.
 
 
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Magicmath uses a webcam and projector to:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+- Parse handwritten math expressions on a whiteboard.
+- Solve advanced mathematical problems.
+- Display solutions using augmented projection.
+
+For more examples and guides, refer to the documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
 
-
-<!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] Add support for integrals and derivatives.
+- [ ] Optimize image registration for low-light conditions.
+- [ ] Extend TTS support for multiple languages.
+- [ ] Build a plugin system for adding new notations.
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/github_username/repo_name/issues) for a complete list of planned features and known bugs.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
