@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/magicmath">
+  <a href="https://github.com/aswarbs/magicmath">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -20,36 +20,17 @@
   <p align="center">
     An open-source, augmented projection system for advanced mathematics.
     <br />
-    <a href="https://github.com/github_username/magicmath"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/aswarbs/magicmath"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/magicmath">View Demo</a>
+    <a href="https://github.com/aswarbs/magicmath">View Demo</a>
     ·
-    <a href="https://github.com/github_username/magicmath/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/aswarbs/magicmath/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/magicmath/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/aswarbs/magicmath/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
----
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about-magicmath">About Magicmath</a></li>
-    <li><a href="#built-with">Built With</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
----
 
 <!-- ABOUT THE PROJECT -->
 ## About Magicmath
@@ -83,34 +64,9 @@ Follow these steps to set up Magicmath locally.
 ### Prerequisites
 
 - Install Python 3.x: [Download Python](https://www.python.org/downloads/)
-- Install OpenCV and other dependencies:
+- Install other dependencies:
   ```sh
-  pip install opencv-python numpy pyttsx3
-
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+  pip install -r requirements.txt
 
 
 ## Usage
@@ -125,43 +81,7 @@ For more examples and guides, refer to the documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
----
-
-## Roadmap
-
-- [ ] Add support for integrals and derivatives.
-- [ ] Optimize image registration for low-light conditions.
-- [ ] Extend TTS support for multiple languages.
-- [ ] Build a plugin system for adding new notations.
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a complete list of planned features and known bugs.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Top contributors:
-
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
-</a>
-
+--
 
 
 <!-- LICENSE -->
@@ -184,31 +104,20 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/aswarbs/magicmath.svg?style=for-the-badge
+[contributors-url]: https://github.com/aswarbs/magicmath/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/aswarbs/magicmath.svg?style=for-the-badge
+[forks-url]: https://github.com/aswarbs/magicmath/network/members
+[stars-shield]: https://img.shields.io/github/stars/aswarbs/magicmath.svg?style=for-the-badge
+[stars-url]: https://github.com/aswarbs/magicmath/stargazers
+[issues-shield]: https://img.shields.io/github/issues/aswarbs/magicmath.svg?style=for-the-badge
+[issues-url]: https://github.com/aswarbs/magicmath/issues
+[license-shield]: https://img.shields.io/github/license/aswarbs/magicmath.svg?style=for-the-badge
+[license-url]: https://github.com/aswarbs/magicmath/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[linkedin-url]: https://linkedin.com/in/amber-swarbrick-50b963172/
 [product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
